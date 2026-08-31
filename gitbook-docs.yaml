@@ -1,0 +1,11 @@
+$schema: https://api.gitbook.com/gitbook-docs.yaml
+site:
+  title: S.H.E.R.L.O.C.K.
+  structure:
+    - type: space
+      key: space-docs
+      title: S.H.E.R.L.O.C.K. documentation
+      path: docs
+      default: true
+      content:
+        directory: ./docs
