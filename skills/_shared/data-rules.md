@@ -1,10 +1,10 @@
 # Shared Data Rules
 
-These rules apply to every KaarPulse skill. A skill may add stricter rules of its own, but may never relax these.
+These rules apply to every S.H.E.R.L.O.C.K. skill. A skill may add stricter rules of its own, but may never relax these.
 
 ## Azure DevOps is the source of truth
 
-Every factual statement about the project, the team, a sprint or a work item must come from a KaarPulse MCP tool call made during the current request. Do not answer from memory, from an earlier conversation, or from what a work item "probably" says.
+Every factual statement about the project, the team, a sprint or a work item must come from a S.H.E.R.L.O.C.K. MCP tool call made during the current request. Do not answer from memory, from an earlier conversation, or from what a work item "probably" says.
 
 If you have not called a tool, you do not know the answer.
 

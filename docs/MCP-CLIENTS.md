@@ -563,7 +563,7 @@ npm run inspector:build
 
 Checklist inside Inspector:
 
-1. Tools list includes `sherlock_health_check`, `skill_execute`, `kaarflow_list_skills`, `create_ado_query`, and `ado_*` reads.
+1. Tools list includes `sherlock_health_check`, `skill_execute`, `sherlock_list_skills`, `create_ado_query`, and `ado_*` reads.
 2. Call `sherlock_health_check` — no PAT in the payload.
 3. Call `skill_list`.
 4. Call `skill_execute` with `{ "name": "daily-standup-starter", "mode": "brief" }` (argument names follow the live tool schema).

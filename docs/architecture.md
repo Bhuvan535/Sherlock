@@ -70,7 +70,7 @@ Claude Desktop / Claude Code / Claude CLI / Cursor / Kiro / Inspector
         v
 +------------------------------------------------------+
 | MCP tool layer                                       |
-|  ado_*  analysis_*  skill_*  kaarflow_*  sherlock_*  |
+|  ado_*  analysis_*  skill_*  sherlock_*  |
 +-----------------------------+------------------------+
                               |
                               v
@@ -112,7 +112,7 @@ Thin orchestrators registered in `src/server.ts`. Groups:
 | `analysis_*` | Heuristic envelopes: `facts` vs `observations` / `concerns` / `recommendations` |
 | `tl_*` | Local audit-trail reviews |
 | `skill_*` | List / get / execute built-in and custom skills |
-| `kaarflow_*` | Custom skill lifecycle and composition |
+| `sherlock_*` (custom skills) | Custom skill lifecycle and composition |
 | `create_ado_query` | **Only** Azure DevOps write: saved queries |
 | `sherlock_health_check` | Configuration + ADO + runtime diagnostics |
 

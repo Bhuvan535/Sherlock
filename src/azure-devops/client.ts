@@ -142,7 +142,7 @@ export class AzureDevOpsReadClient {
                         headers: {
                             Authorization: this.authorizationHeader(),
                             Accept: 'application/json',
-                            'User-Agent': 'k4k-team-lead-assistant/1.0 (read-only)',
+                            'User-Agent': 'sherlock/1.0 (read-only)',
                             ...(body === undefined ? {} : { 'Content-Type': 'application/json' })
                         },
                         ...(body === undefined ? {} : { body: JSON.stringify(body) }),

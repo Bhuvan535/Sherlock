@@ -55,7 +55,7 @@ There is **no saved-query discovery / list tool** on this server. Reuse is title
 1. Use a predictable title: `{Team} - {Short Category}` (Team Lead friendly, searchable). Example: `Platform - Overdue Work`.
 2. Call `create_ado_query` with that title.
 3. If the tool returns `QUERY_ALREADY_EXISTS`, reuse `existingQueryUrl` (or `savedQueryUrl`) and the `resultCount` when present. Do not create a second query with a timestamped or numbered name.
-4. Always store queries in `My Queries/KaarFlow`. `create_ado_query` has no folder argument and always uses this path. If the tool returns `QUERY_FOLDER_NOT_FOUND`, report that the folder could not be used. Do not retry Shared Queries. Never invent a folder.
+4. Always store queries in `My Queries/{ADO_TEAM}` (the configured team). `create_ado_query` has no folder argument and always uses this path. If the tool returns `QUERY_FOLDER_NOT_FOUND`, report that the folder could not be used. Do not retry Shared Queries. Never invent a folder. Legacy folders such as `My Queries/KaarFlow` are not used for new queries.
 5. Pass `project` from a live tool result (`ado_get_connection_status`, `ado_query_work_items`, or the analysis envelope). Do not guess the project name.
 
 Bad titles: `Query1`, `ADO Data`, `Generated Query`.
@@ -64,7 +64,7 @@ Bad titles: `Query1`, `ADO Data`, `Generated Query`.
 
 Pass `queryDescription` when calling `create_ado_query`. It must explain (1) what the query contains, (2) why it was created, (3) the identifying condition.
 
-Example: `All completed User Stories in the K4K Platform team that have no child Tasks. Created by KaarPulse backlog quality analysis for governance review.`
+Example: `All completed User Stories in the K4K Platform team that have no child Tasks. Created by S.H.E.R.L.O.C.K. backlog quality analysis for governance review.`
 
 ## Query fields (dynamic, from live mapping)
 
@@ -102,7 +102,7 @@ create_ado_query:
   queryDescription — what / why / condition
   wiql             — SELECT-only WIQL using real field reference names
   columns          — optional extra SELECT columns (reference names only)
-  (no folder argument — always "My Queries/KaarFlow")
+  (no folder argument — always "My Queries/{ADO_TEAM}")
 ```
 
 WIQL must be a single SELECT. It cannot update work items. If `create_ado_query` returns `INVALID_WIQL`, still present the analysis and say the query could not be created. Never fabricate a URL.
@@ -154,7 +154,7 @@ Each recommendation answers what, why, expected impact, when, and points at evid
 **Confidence:** High
 ```
 
-KaarPulse cannot apply the recommendation. The Team Lead makes the change in Azure DevOps.
+S.H.E.R.L.O.C.K. cannot apply the recommendation. The Team Lead makes the change in Azure DevOps.
 
 ## Source footer
 

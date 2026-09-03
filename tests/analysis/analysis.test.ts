@@ -425,7 +425,7 @@ describe('backlog governance analysis', () => {
         expect(envelope.kind).toBe('backlog_quality');
         expect(envelope.facts.totalAnalyzed).toBeGreaterThan(5);
         expect(envelope.facts.categoryCount).toBeGreaterThan(3);
-        expect(envelope.facts.queryFolder).toBe('My Queries/KaarFlow');
+        expect(envelope.facts.queryFolder).toBe('My Queries/Platform');
         expect(envelope.facts.categories.length).toBeGreaterThan(3);
         expect(envelope.disclaimer).toContain('AI-GENERATED');
     });

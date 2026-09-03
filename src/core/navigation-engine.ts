@@ -2,7 +2,7 @@ import { getConfig } from '../config/env.js';
 
 /**
  * Reusable navigation URL service for Azure DevOps entities.
- * Generates direct browser links for the KaarPulse assistant.
+ * Generates direct browser links for S.H.E.R.L.O.C.K.
  */
 export class NavigationEngine {
     private get config() {

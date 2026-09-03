@@ -65,6 +65,7 @@ function ctx(items: WorkItem[], extra: Partial<BacklogContext> = {}): BacklogCon
         currentSprintPath: 'K4K\\Sprint 12',
         currentSprintStart: null,
         currentSprintEnd: null,
+        iterations: [],
         now: new Date(),
         truncated: false,
         scannedLimit: 500,
@@ -116,8 +117,8 @@ describe('backlog governance analyser', () => {
         const cat = result.categories.find(c => c.category === 'Orphan Task');
         expect(cat?.count).toBe(4);
         expect(cat?.createQuery).toBe(true);
-        expect(cat?.queryName).toBe('KaarFlow - Orphan Task');
-        expect(result.queryHints.some(h => h.queryName === 'KaarFlow - Orphan Task')).toBe(true);
+        expect(cat?.queryName).toBe('Orphan Task');
+        expect(result.queryHints.some(h => h.queryName === 'Orphan Task')).toBe(true);
     });
 
     it('does not flag an active story that has Hierarchy-Forward children even if those tasks were not loaded', () => {
@@ -164,5 +165,98 @@ describe('backlog governance analyser', () => {
         });
         const result = analyseBacklog(ctx([task]));
         expect(result.categories.some(c => c.category === 'Invalid Planned Dates')).toBe(true);
+    });
+
+    const teamSprints = [
+        {
+            name: 'S10-Aug FY27',
+            path: 'K4K\\Platform\\S10-Aug FY27',
+            startDate: new Date('2026-08-16T00:00:00Z'),
+            finishDate: new Date('2026-08-30T00:00:00Z'),
+            timeFrame: 'past' as const
+        },
+        {
+            name: 'S11-Sept FY27',
+            path: 'K4K\\Platform\\S11-Sept FY27',
+            startDate: new Date('2026-08-31T00:00:00Z'),
+            finishDate: new Date('2026-09-15T00:00:00Z'),
+            timeFrame: 'current' as const
+        },
+        {
+            name: 'S12-Sept FY27',
+            path: 'K4K\\Platform\\S12-Sept FY27',
+            startDate: new Date('2026-09-16T00:00:00Z'),
+            finishDate: new Date('2026-09-30T00:00:00Z'),
+            timeFrame: 'future' as const
+        }
+    ];
+
+    it('flags stories, tasks and bugs on the team backlog, but not epics or features', () => {
+        const feature = item({
+            id: 3171,
+            type: 'Feature',
+            title: 'KAFY - DMS delivery feature spanning several sprints',
+            state: 'New',
+            stateCategory: 'Proposed',
+            iterationPath: 'K4K\\Platform'
+        });
+        const story = item({
+            id: 3172,
+            type: 'User Story',
+            title: 'As a user I can upload a document in the DMS',
+            state: 'New',
+            stateCategory: 'Proposed',
+            iterationPath: 'K4K\\Platform',
+            parentId: 3171
+        });
+        const result = analyseBacklog(
+            ctx([feature, story], {
+                currentSprintPath: 'K4K\\Platform\\S11-Sept FY27',
+                iterations: teamSprints
+            })
+        );
+        expect(result.categories.some(c => c.category === 'Not Assigned To A Sprint' && c.itemIds.includes(3171))).toBe(
+            false
+        );
+        const cat = result.categories.find(c => c.category === 'Not Assigned To A Sprint');
+        expect(cat?.itemIds).toContain(3172);
+    });
+
+    it('flags open work left on a past sprint using iteration dates', () => {
+        const task = item({
+            id: 4001,
+            type: 'Task',
+            title: 'Finish leftover implementation work from the previous sprint',
+            state: 'Active',
+            iterationPath: 'K4K\\Platform\\S10-Aug FY27',
+            parentId: 50
+        });
+        const result = analyseBacklog(
+            ctx([task], {
+                currentSprintPath: 'K4K\\Platform\\S11-Sept FY27',
+                iterations: teamSprints,
+                now: new Date('2026-09-03T00:00:00Z')
+            })
+        );
+        expect(result.categories.some(c => c.category === 'Open Work In Past Sprint')).toBe(true);
+    });
+
+    it('does not require a current-sprint story to be flagged as missing a sprint', () => {
+        const story = item({
+            id: 4002,
+            type: 'User Story',
+            title: 'Story committed to the current sprint with a parent feature',
+            state: 'Active',
+            iterationPath: 'K4K\\Platform\\S11-Sept FY27',
+            parentId: 10
+        });
+        const result = analyseBacklog(
+            ctx([story], {
+                currentSprintPath: 'K4K\\Platform\\S11-Sept FY27',
+                iterations: teamSprints
+            })
+        );
+        expect(result.categories.some(c => c.category === 'Not Assigned To A Sprint')).toBe(false);
+        expect(result.categories.some(c => c.category === 'Open Work In Past Sprint')).toBe(false);
     });
 });

@@ -50,14 +50,14 @@ async function main() {
     } while (cursor);
     const required = [
         'skill_execute',
-        'kaarflow_create_skill',
-        'kaarflow_update_skill',
-        'kaarflow_remove_skill',
-        'kaarflow_list_skills',
-        'kaarflow_get_skill',
-        'kaarflow_enable_skill',
-        'kaarflow_disable_skill',
-        'kaarflow_duplicate_skill'
+        'sherlock_create_skill',
+        'sherlock_update_skill',
+        'sherlock_remove_skill',
+        'sherlock_list_skills',
+        'sherlock_get_skill',
+        'sherlock_enable_skill',
+        'sherlock_disable_skill',
+        'sherlock_duplicate_skill'
     ];
     console.log('DIST_TOOLS', required.filter(t => !tools.includes(t)));
 

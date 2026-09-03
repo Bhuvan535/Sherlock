@@ -60,7 +60,8 @@ function kpiTable(rows: [string, string][]): string[] {
 }
 
 function header(title: string, ctx: SkillContextLabel | undefined, extra: string[] = []): string[] {
-    const lines = [`# ${title}`, ''];
+    const branded = title.includes('S.H.E.R.L.O.C.K.') ? title : `📊 S.H.E.R.L.O.C.K. — ${title.replace(/^📊\s*/, '').replace(/^🌅\s*/, '')}`;
+    const lines = [`# ${branded}`, ''];
     if (ctx) {
         const bits = [`${ctx.project} / ${ctx.team}`];
         if (ctx.sprint) bits.push(`Sprint ${ctx.sprint}`);
@@ -295,7 +296,7 @@ export function formatSkillMarkdown(result: SkillExecutionResult, ctx?: SkillCon
 
     if (mode === 'brief') {
         if (skillName === 'daily-standup-starter') {
-            lines.push(...header('🌅 Daily Standup', ctx));
+            lines.push(...header('Daily Standup', ctx));
             const sprint = str(source.sprint) ?? ctx?.sprint;
             const team = str(source.team) ?? ctx?.team;
             if (sprint) lines.push(`Sprint: ${sprint}`);

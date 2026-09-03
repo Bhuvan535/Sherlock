@@ -81,7 +81,7 @@ Missing planned dates reduce forecast reliability — say what share of remainin
 
 Follow `_shared/output-format.md`.
 
-1. `# 📊 KaarPulse — Delivery Forecast`
+1. `# 📊 S.H.E.R.L.O.C.K. — Delivery Forecast`
 2. Executive summary: outlook **or** "forecast unavailable because …".
 3. **📌 At a Glance** — remaining work, days remaining, completed in window, blocked, overdue.
 4. Forecast section or unavailability reasons (explicit list).

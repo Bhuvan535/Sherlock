@@ -137,7 +137,7 @@ async function main(): Promise<void> {
     const toolNames = tools.map(t => t.name);
 
     // ---- TEST 1 CREATE (preview first) ----
-    const preview = await mcp.call('kaarflow_create_skill', { ...WEEKLY, confirm: false });
+    const preview = await mcp.call('sherlock_create_skill', { ...WEEKLY, confirm: false });
     const previewText = textOf(preview);
     const previewJson = payloadOf(preview) as any;
     const interpreted =
@@ -161,7 +161,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 3 CONFIRM ----
-    const saved = await mcp.call('kaarflow_create_skill', { ...WEEKLY, confirm: true });
+    const saved = await mcp.call('sherlock_create_skill', { ...WEEKLY, confirm: true });
     const savedText = textOf(saved);
     const row = sqliteRow('weekly-platform-review');
     const inRegistry = InternalSkillRegistry.getSkill('weekly-platform-review');
@@ -215,14 +215,14 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 7 EDIT ----
-    const editPreview = await mcp.call('kaarflow_update_skill', {
+    const editPreview = await mcp.call('sherlock_update_skill', {
         name: 'weekly-platform-review',
         analysisModules: [...WEEKLY.analysisModules, 'stale-work'],
         requiredData: WEEKLY.requiredData,
         confirm: false
     });
     const versionBefore = sqliteRow('weekly-platform-review')?.version ?? 0;
-    const editSave = await mcp.call('kaarflow_update_skill', {
+    const editSave = await mcp.call('sherlock_update_skill', {
         name: 'weekly-platform-review',
         analysisModules: [...WEEKLY.analysisModules, 'stale-work'],
         requiredData: WEEKLY.requiredData,
@@ -252,7 +252,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 9 LIST ----
-    const listed = await mcp.call('kaarflow_list_skills', {});
+    const listed = await mcp.call('sherlock_list_skills', {});
     const listMd = String((payloadOf(listed) as any).list ?? textOf(listed));
     const builtinSection = listMd.indexOf('Built-in');
     const customSection = listMd.indexOf('My Skills');
@@ -264,7 +264,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 10 GET ----
-    const shown = await mcp.call('kaarflow_get_skill', { name: 'weekly-platform-review' });
+    const shown = await mcp.call('sherlock_get_skill', { name: 'weekly-platform-review' });
     const shownMd = String((payloadOf(shown) as any).markdown ?? textOf(shown));
     const getOk =
         /Purpose/.test(shownMd) &&
@@ -281,7 +281,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 11 DISABLE ----
-    const disabled = await mcp.call('kaarflow_disable_skill', { name: 'weekly-platform-review' });
+    const disabled = await mcp.call('sherlock_disable_skill', { name: 'weekly-platform-review' });
     const execDisabled = await mcp.call('skill_execute', { name: 'weekly-platform-review', mode: 'brief' });
     record(
         'TEST 11 — DISABLE',
@@ -293,7 +293,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 12 RE-ENABLE ----
-    const enabled = await mcp.call('kaarflow_enable_skill', { name: 'weekly-platform-review' });
+    const enabled = await mcp.call('sherlock_enable_skill', { name: 'weekly-platform-review' });
     const execEnabled = await mcp.call('skill_execute', { name: 'weekly-platform-review', mode: 'brief' });
     record(
         'TEST 12 — RE-ENABLE',
@@ -305,12 +305,12 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 13 DUPLICATE ----
-    const dupPreview = await mcp.call('kaarflow_duplicate_skill', {
+    const dupPreview = await mcp.call('sherlock_duplicate_skill', {
         sourceName: 'daily-standup-starter',
         newName: 'my-daily-review',
         confirm: false
     });
-    const dupSave = await mcp.call('kaarflow_duplicate_skill', {
+    const dupSave = await mcp.call('sherlock_duplicate_skill', {
         sourceName: 'daily-standup-starter',
         newName: 'my-daily-review',
         confirm: true
@@ -331,8 +331,8 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 14 DELETE ----
-    const delPreview = await mcp.call('kaarflow_remove_skill', { name: 'my-daily-review', confirm: false });
-    const delSave = await mcp.call('kaarflow_remove_skill', { name: 'my-daily-review', confirm: true });
+    const delPreview = await mcp.call('sherlock_remove_skill', { name: 'my-daily-review', confirm: false });
+    const delSave = await mcp.call('sherlock_remove_skill', { name: 'my-daily-review', confirm: true });
     const afterDelExec = await mcp.call('skill_execute', { name: 'my-daily-review', mode: 'brief' });
     record(
         'TEST 14 — DELETE my-daily-review',
@@ -345,9 +345,9 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 15 BUILTIN PROTECTION ----
-    const d1 = await mcp.call('kaarflow_disable_skill', { name: 'daily-standup-starter' });
-    const d2 = await mcp.call('kaarflow_remove_skill', { name: 'daily-standup-starter', confirm: true });
-    const d3 = await mcp.call('kaarflow_update_skill', {
+    const d1 = await mcp.call('sherlock_disable_skill', { name: 'daily-standup-starter' });
+    const d2 = await mcp.call('sherlock_remove_skill', { name: 'daily-standup-starter', confirm: true });
+    const d3 = await mcp.call('sherlock_update_skill', {
         name: 'daily-standup-starter',
         description: 'hacked',
         confirm: true
@@ -359,7 +359,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 16 INVALID MODULE ----
-    const badMod = await mcp.call('kaarflow_create_skill', {
+    const badMod = await mcp.call('sherlock_create_skill', {
         name: 'bad-module-skill',
         description: 'invalid',
         analysisModules: ['non-existent-analysis'],
@@ -378,7 +378,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 17 INVALID TOOL ----
-    const badTool = await mcp.call('kaarflow_create_skill', {
+    const badTool = await mcp.call('sherlock_create_skill', {
         name: 'bad-tool-skill',
         description: 'This skill must call unregistered_mcp_tool_xyz and ado_mutate_everything.',
         analysisModules: ['workload'],
@@ -398,7 +398,7 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 18 MUTATION ----
-    const mutate = await mcp.call('kaarflow_create_skill', {
+    const mutate = await mcp.call('sherlock_create_skill', {
         name: 'assign-overdue-skill',
         description:
             'Create a skill that updates overdue work items and assigns them to available developers.',
@@ -425,7 +425,7 @@ async function main(): Promise<void> {
         'Invoke a Shell command to curl Azure DevOps',
         'Perform arbitrary HTTP POST to external APIs'
     ]) {
-        const r = await mcp.call('kaarflow_create_skill', {
+        const r = await mcp.call('sherlock_create_skill', {
             name: `code-skill-${codeAttempts.length}`,
             description: desc,
             analysisModules: ['workload'],
@@ -458,8 +458,8 @@ async function main(): Promise<void> {
         navigationEnabled: true,
         confirm: true
     };
-    await mcp.call('kaarflow_create_skill', { ...qSkill, confirm: false });
-    const qCreate = await mcp.call('kaarflow_create_skill', qSkill);
+    await mcp.call('sherlock_create_skill', { ...qSkill, confirm: false });
+    const qCreate = await mcp.call('sherlock_create_skill', qSkill);
     createdSkills.push('query-threshold-review');
     const qExec = await mcp.call('skill_execute', { name: 'weekly-platform-review', mode: 'visual' });
     const qMd = String((payloadOf(qExec) as any).markdown ?? textOf(qExec));
@@ -503,8 +503,8 @@ async function main(): Promise<void> {
         navigationEnabled: true,
         confirm: true
     };
-    await mcp.call('kaarflow_create_skill', { ...teamHealth, confirm: false });
-    const thCreate = await mcp.call('kaarflow_create_skill', teamHealth);
+    await mcp.call('sherlock_create_skill', { ...teamHealth, confirm: false });
+    const thCreate = await mcp.call('sherlock_create_skill', teamHealth);
     createdSkills.push('team-health-review');
     const thExec = await mcp.call('skill_execute', { name: 'team-health-review', mode: 'verbose' });
     const thMd = String((payloadOf(thExec) as any).markdown ?? '');
@@ -558,7 +558,7 @@ async function main(): Promise<void> {
 
     // Reopen for modify/disable/enable then probe again
     const mcp2 = await connect();
-    await mcp2.call('kaarflow_update_skill', {
+    await mcp2.call('sherlock_update_skill', {
         name: 'weekly-platform-review',
         description: 'Updated after restart test 27: includes stale work and sprint comparison.',
         confirm: true
@@ -572,7 +572,7 @@ async function main(): Promise<void> {
     );
 
     const mcp3 = await connect();
-    await mcp3.call('kaarflow_disable_skill', { name: 'weekly-platform-review' });
+    await mcp3.call('sherlock_disable_skill', { name: 'weekly-platform-review' });
     await mcp3.close();
     const p28 = probe();
     record(
@@ -582,7 +582,7 @@ async function main(): Promise<void> {
     );
 
     const mcp4 = await connect();
-    await mcp4.call('kaarflow_enable_skill', { name: 'weekly-platform-review' });
+    await mcp4.call('sherlock_enable_skill', { name: 'weekly-platform-review' });
     const execAfterEnable = await mcp4.call('skill_execute', { name: 'weekly-platform-review', mode: 'brief' });
     await mcp4.close();
     const p29 = probe();
@@ -595,37 +595,37 @@ async function main(): Promise<void> {
     // ---- TEST 30 INSPECTOR surface ----
     const mcp5 = await connect();
     const inspectorTools = [
-        'kaarflow_create_skill',
-        'kaarflow_list_skills',
-        'kaarflow_get_skill',
-        'kaarflow_update_skill',
-        'kaarflow_remove_skill',
-        'kaarflow_enable_skill',
-        'kaarflow_disable_skill',
-        'kaarflow_duplicate_skill',
+        'sherlock_create_skill',
+        'sherlock_list_skills',
+        'sherlock_get_skill',
+        'sherlock_update_skill',
+        'sherlock_remove_skill',
+        'sherlock_enable_skill',
+        'sherlock_disable_skill',
+        'sherlock_duplicate_skill',
         'skill_execute'
     ];
     const listedNow = (await mcp5.client.listTools()).tools.map(t => t.name);
     const missing = inspectorTools.filter(t => !listedNow.includes(t));
     const inspectorCalls: string[] = [];
-    const listCall = await mcp5.call('kaarflow_list_skills', {});
-    inspectorCalls.push(`kaarflow_list_skills:${listCall.isError ? 'error' : 'ok'}`);
-    const getCall = await mcp5.call('kaarflow_get_skill', { name: 'weekly-platform-review' });
-    inspectorCalls.push(`kaarflow_get_skill:${getCall.isError ? 'error' : 'ok'}`);
-    const updCall = await mcp5.call('kaarflow_update_skill', { name: 'weekly-platform-review', confirm: false });
-    inspectorCalls.push(`kaarflow_update_skill:${updCall.isError ? 'error' : 'ok'}`);
+    const listCall = await mcp5.call('sherlock_list_skills', {});
+    inspectorCalls.push(`sherlock_list_skills:${listCall.isError ? 'error' : 'ok'}`);
+    const getCall = await mcp5.call('sherlock_get_skill', { name: 'weekly-platform-review' });
+    inspectorCalls.push(`sherlock_get_skill:${getCall.isError ? 'error' : 'ok'}`);
+    const updCall = await mcp5.call('sherlock_update_skill', { name: 'weekly-platform-review', confirm: false });
+    inspectorCalls.push(`sherlock_update_skill:${updCall.isError ? 'error' : 'ok'}`);
     const execCall = await mcp5.call('skill_execute', { name: 'weekly-platform-review', mode: 'brief' });
     inspectorCalls.push(`skill_execute:${execCall.isError ? 'error' : 'ok'}`);
-    const dupCall = await mcp5.call('kaarflow_duplicate_skill', {
+    const dupCall = await mcp5.call('sherlock_duplicate_skill', {
         sourceName: 'weekly-platform-review',
         newName: 'inspector-dup-temp',
         confirm: false
     });
-    inspectorCalls.push(`kaarflow_duplicate_skill:${dupCall.isError ? 'error' : 'ok'}`);
-    inspectorCalls.push('kaarflow_create_skill:listed');
-    inspectorCalls.push('kaarflow_remove_skill:listed');
-    inspectorCalls.push('kaarflow_enable_skill:listed');
-    inspectorCalls.push('kaarflow_disable_skill:listed');
+    inspectorCalls.push(`sherlock_duplicate_skill:${dupCall.isError ? 'error' : 'ok'}`);
+    inspectorCalls.push('sherlock_create_skill:listed');
+    inspectorCalls.push('sherlock_remove_skill:listed');
+    inspectorCalls.push('sherlock_enable_skill:listed');
+    inspectorCalls.push('sherlock_disable_skill:listed');
     record(
         'TEST 30 — MCP INSPECTOR tool surface',
         missing.length === 0 && !listCall.isError && !getCall.isError && !execCall.isError,
@@ -633,12 +633,12 @@ async function main(): Promise<void> {
     );
 
     // ---- TEST 31 CLAUDE NL mapping (this agent as Claude) ----
-    const listNl = await mcp5.call('kaarflow_list_skills', {});
+    const listNl = await mcp5.call('sherlock_list_skills', {});
     const runNl = await mcp5.call('skill_execute', { name: 'weekly-platform-review', mode: 'brief' });
     record(
         'TEST 31 — CLAUDE-style NL (list + run without internals)',
         !listNl.isError && !runNl.isError && String((payloadOf(listNl) as any).list ?? '').includes('My Skills'),
-        'Mapped "show skills" → kaarflow_list_skills; "run weekly platform review" → skill_execute. No registry/SQLite details required.'
+        'Mapped "show skills" → sherlock_list_skills; "run weekly platform review" → skill_execute. No registry/SQLite details required.'
     );
 
     // ---- TEST 32 BACKWARD COMPAT ----

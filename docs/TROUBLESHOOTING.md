@@ -66,7 +66,7 @@ See [MCP-CLIENTS.md](./MCP-CLIENTS.md).
 
 **Symptom:** skill missing after restart.
 
-**Fix:** Same `DATABASE_URL` / `data/sherlock.sqlite`. Directory must be writable. `skipDatabaseInit` is test-only. Call `kaarflow_list_skills`.
+**Fix:** Same `DATABASE_URL` / `data/sherlock.sqlite`. Directory must be writable. `skipDatabaseInit` is test-only. Call `sherlock_list_skills`.
 
 ## SQLite initialization
 

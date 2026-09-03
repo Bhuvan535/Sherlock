@@ -3,7 +3,7 @@
 > **Purpose of this document.** It describes what this project is, what has been built and verified so far, and exactly what remains. It is written to be handed to another coding agent as the sole source of context. Read the "Rules you must not break" section before changing any code.
 
 - **Repository root:** `d:\Bhuvan\Kaar\K4K\Yeager`
-- **Package name:** `k4k-team-lead-assistant` (v1.0.0, private)
+- **Package name:** `sherlock-mcp` (v1.0.0, private)
 - **Last verified:** typecheck clean, 181/181 tests passing, server boots over stdio and registers 76 tools (75 read-only), 23 resources, 10 prompts and 12 skills.
 - **Host environment:** Windows 10, PowerShell. Node >= 22.5 required (uses the built-in `node:sqlite`).
 
@@ -172,11 +172,11 @@ Guarantees implemented and tested: `confirmation !== true` is refused before any
 
 ### 4.6 Skills
 
-`skills/` holds twelve markdown playbooks that orchestrate the tools above into repeatable Team Lead workflows: `team-morning-brief`, `workload-analysis`, `deadline-risk-analysis`, `project-health-analysis`, `sprint-health-analysis`, `work-assignment-recommendation`, `team-productivity-review`, `tl-productivity-review`, `team-email-assistant`, `daily-team-report`, `weekly-team-review`, and the `skill-index` router. Four documents in `skills/_shared/` carry the data, analysis, output and safety rules every skill inherits.
+`skills/` holds twelve markdown playbooks that orchestrate the tools above into repeatable Team Lead workflows: `team-morning-brief`, `workload-analysis`, `deadline-risk-analysis`, `project-health-analysis`, `sprint-health-analysis`, `work-assignment-recommendation`, `team-productivity-review`, `tl-productivity-review`, `copy the report (email is not available)`, `daily-team-report`, `weekly-team-review`, and the `skill-index` router. Four documents in `skills/_shared/` carry the data, analysis, output and safety rules every skill inherits.
 
 Each `SKILL.md` is YAML frontmatter plus ten fixed sections. `src/skills/loader.ts` discovers them at startup, parses them with a deliberately minimal frontmatter reader (no YAML dependency), and `assertSkillCatalogueIsValid()` aborts startup unless every skill is fully specified, declares itself non-mutating, and **references only tools the server actually exposes**. That last check is what makes an invented tool name impossible: renaming a tool breaks the build rather than silently producing a skill that tells Claude to call something imaginary.
 
-Skills reach the client two ways, both backed by the same files: the `skill_list` and `skill_get` tools (so the model can route on its own), and `skill://kaarpulse/*` resources (so the Team Lead can attach one deliberately). Loading a skill is a local file read and issues no Azure DevOps request — a test asserts this. See `skills/README.md`.
+Skills reach the client two ways, both backed by the same files: the `skill_list` and `skill_get` tools (so the model can route on its own), and `skill://sherlock/*` resources (so the Team Lead can attach one deliberately). Loading a skill is a local file read and issues no Azure DevOps request — a test asserts this. See `skills/README.md`.
 
 ### 4.7 MCP surface
 
@@ -270,7 +270,7 @@ Two test files are missing (the skill suites are complete). Follow the existing 
 - **`docs/security.md`** — the three enforcement layers, the forbidden lists, the email gate, secret handling and redaction, the audit trail, threat cases (prompt-injected "update this item", tampered draft, arbitrary HTTP attempt) and how each is refused.
 - **`docs/azure-devops.md`** — PAT creation and scopes, the REST endpoints used, field/state-category discovery, the blocked-work signals, hierarchy traversal, rate limits.
 - **`docs/email.md`** — Graph app registration, least-privilege permissions, the draft/confirm/send/log flow, the allowlist, draft expiry, what is and is not stored.
-- **`docs/skills.md`** — or simply link `skills/README.md` from the root README rather than duplicating it. Cover what a skill is, the catalogue, how `skill_list` / `skill_get` and the `skill://kaarpulse/*` resources expose them, the frontmatter contract, startup validation, and how to add one.
+- **`docs/skills.md`** — or simply link `skills/README.md` from the root README rather than duplicating it. Cover what a skill is, the catalogue, how `skill_list` / `skill_get` and the `skill://sherlock/*` resources expose them, the frontmatter contract, startup validation, and how to add one.
 - **`docs/claude-setup.md`** — Desktop and Code configuration, verifying the connection, example conversations for the main workflows.
 - **`docs/mcp-inspector.md`** — installation (already a devDependency), starting the server, `npm run inspector` and `npm run inspector:build`, connecting, inspecting tool schemas, executing tools, testing resources and prompts, error-handling checks, and the **acceptance checklist that the Inspector shows no create/update/delete/assign/state/comment/sprint/backlog tool**. Verify the exact CLI flags against the installed `@modelcontextprotocol/inspector` version before documenting them — do not invent flags.
 

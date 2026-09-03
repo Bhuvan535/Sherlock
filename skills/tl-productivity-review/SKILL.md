@@ -78,7 +78,7 @@ A window longer than the assistant has been installed will return only the days 
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. Two distinct kinds of data are combined here and must stay visibly distinct in the output.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. Two distinct kinds of data are combined here and must stay visibly distinct in the output.
 
 **Primary:**
 
@@ -143,13 +143,13 @@ If `tl_analyze_productivity` fails, run `tl_analyze_activity` and `tl_get_activi
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for TL Productivity Review:**
-1. **Header**: `# 📊 KaarPulse — Team Lead Productivity Review`
+1. **Header**: `# 📊 S.H.E.R.L.O.C.K. — Team Lead Productivity Review`
 2. **Executive Summary**: State the window, the busiest day, and an overarching observation.
-   *CRITICAL: Include the scope note that this ONLY tracks KaarPulse usage.*
+   *CRITICAL: Include the scope note that this ONLY tracks S.H.E.R.L.O.C.K. usage.*
 3. **📌 At a Glance (TL Activity Summary)**:
    Provide a KPI table of: Recorded actions, Busiest day, Top Category, Subjects reviewed more than once, Query-management actions.
 4. **🔎 Key Findings & 🚨 Risks**: 

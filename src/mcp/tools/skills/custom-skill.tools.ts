@@ -26,7 +26,7 @@ function assertCustomSkillPolicy(args: Record<string, unknown>): void {
         throw new AppError(
             'READ_ONLY_VIOLATION',
             'Custom skills cannot update, assign, or otherwise mutate Azure DevOps work items.',
-            { hint: 'KaarFlow is read-only for work items. You can analyse overdue work and recommend owners, but assignments must be made in Azure DevOps.' }
+            { hint: 'S.H.E.R.L.O.C.K. is read-only for work items. You can analyse overdue work and recommend owners, but assignments must be made in Azure DevOps.' }
         );
     }
     if (CODE_EXECUTION_INTENT.test(blob)) {
@@ -48,7 +48,7 @@ function assertCustomSkillPolicy(args: Record<string, unknown>): void {
     const toolMentions = description.match(/\b[a-z][a-z0-9_]{4,}\b/g) ?? [];
     for (const token of toolMentions) {
         if ((token.startsWith('ado_') || token.startsWith('unregistered_') || token.endsWith('_tool') || token.includes('mcp_tool')) && !known.has(token)) {
-            if (token.startsWith('ado_get') || token.startsWith('analysis_') || token.startsWith('skill_') || token.startsWith('email_') || token.startsWith('kaarflow_')) {
+            if (token.startsWith('ado_get') || token.startsWith('analysis_') || token.startsWith('skill_') || token.startsWith('email_') || token.startsWith('sherlock_')) {
                 if (!known.has(token)) {
                     throw new AppError('INVALID_INPUT', `References unknown or disallowed tool: ${token}`);
                 }
@@ -66,10 +66,10 @@ function skillAuditSubject(args: Record<string, unknown>): string | null {
 
 export function registerCustomSkillTools(server: McpServer): void {
     registerTool(server, {
-        name: 'kaarflow_compose_skill',
+        name: 'sherlock_compose_skill',
         title: 'Compose a custom skill from existing skills or modules',
         description:
-            'Combine existing KaarFlow skills and analysis modules into one custom skill. Resolves modules, deduplicates them, and does not run nested Markdown. Call with confirm=false first (preview), then confirm=true to save. Example request: "Create a weekly management review combining sprint health, workload, backlog quality and delivery risk."',
+            'Combine existing S.H.E.R.L.O.C.K. skills and analysis modules into one custom skill. Resolves modules, deduplicates them, and does not run nested Markdown. Call with confirm=false first (preview), then confirm=true to save. Example request: "Create a weekly management review combining sprint health, workload, backlog quality and delivery risk."',
         group: 'analysis',
         inputSchema: {
             name: z.string().describe('New custom skill name (kebab-case), e.g. weekly-management-review'),
@@ -138,7 +138,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_create_skill',
+        name: 'sherlock_create_skill',
         title: 'Create Custom Skill',
         description: 'Create a custom SkillDefinition from modules and/or existing skills. Supports composition: pass sourceSkills or a natural-language request. Call confirm=false first for a preview, then confirm=true to save.',
         group: 'analysis',
@@ -221,8 +221,8 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_list_skills',
-        title: 'List KaarFlow Skills',
+        name: 'sherlock_list_skills',
+        title: 'List S.H.E.R.L.O.C.K. Skills',
         description:
             'Lists built-in capabilities grouped for Team Leads (Team, Sprint, Backlog, Workload, Risk, Quality, Dependencies, Productivity, Delivery) and custom skills separately.',
         group: 'analysis',
@@ -240,7 +240,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_get_skill',
+        name: 'sherlock_get_skill',
         title: 'Show Skill Definition',
         description: 'Gets the structured definition of a skill.',
         group: 'analysis',
@@ -274,7 +274,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_remove_skill',
+        name: 'sherlock_remove_skill',
         title: 'Delete Custom Skill',
         description: 'Deletes a custom skill. Requires confirm=true.',
         group: 'analysis',
@@ -301,7 +301,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_enable_skill',
+        name: 'sherlock_enable_skill',
         title: 'Enable Skill',
         description: 'Enables a disabled skill.',
         group: 'analysis',
@@ -322,7 +322,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_disable_skill',
+        name: 'sherlock_disable_skill',
         title: 'Disable Skill',
         description: 'Disables an active skill. Builtin skills cannot be disabled.',
         group: 'analysis',
@@ -342,7 +342,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_update_skill',
+        name: 'sherlock_update_skill',
         title: 'Update Custom Skill',
         description: 'Updates an existing custom skill. Like create, requires confirm=true to save.',
         group: 'analysis',
@@ -417,7 +417,7 @@ export function registerCustomSkillTools(server: McpServer): void {
     });
 
     registerTool(server, {
-        name: 'kaarflow_duplicate_skill',
+        name: 'sherlock_duplicate_skill',
         title: 'Duplicate Skill',
         description: 'Creates a custom skill based on an existing builtin or custom skill.',
         group: 'analysis',

@@ -87,7 +87,7 @@ Insights must explain significance, not repeat the count. A percentage is allowe
 
 ## Recommendations must be actionable and honest about ownership
 
-A recommendation names what to do, who it concerns and why now. It must also be honest that KaarPulse cannot perform it: every change happens in Azure DevOps, by a human.
+A recommendation names what to do, who it concerns and why now. It must also be honest that S.H.E.R.L.O.C.K. cannot perform it: every change happens in Azure DevOps, by a human.
 
 Good: "Follow up with Priya on #1145 — due in 1 day, still Proposed, and it blocks #1150 in this sprint. Reassignment or a date change has to be made in Azure DevOps."
 

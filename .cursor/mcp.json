@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "k4k-team-lead-assistant": {
+    "sherlock": {
       "command": "node",
       "args": [
         "D:\\Bhuvan\\Kaar\\K4K\\Yeager\\dist\\index.js"

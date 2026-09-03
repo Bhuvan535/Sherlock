@@ -4,6 +4,7 @@ export default defineConfig({
     test: {
         environment: 'node',
         include: ['tests/**/*.test.ts'],
+        setupFiles: ['tests/setup-env.ts'],
         globals: false,
         // The MCP server is a singleton-ish process (SQLite handle, env validation),
         // so tests run in isolated forks to avoid cross-file state bleed.

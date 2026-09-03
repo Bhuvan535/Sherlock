@@ -17,7 +17,7 @@ triggers:
 # Backlog Governance and Quality Analysis
 
 ## Purpose
-Give the Team Lead a broad governance view of the K4K Platform backlog.
+Give the Team Lead a broad governance view of the configured team's backlog, including sprint assignment for stories, tasks and bugs (Epics and Features may stay on the team backlog).
 
 ## When to Use
 Use when the Team Lead asks to analyse backlog quality, governance, or faults.

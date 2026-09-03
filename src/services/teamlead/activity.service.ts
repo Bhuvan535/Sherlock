@@ -190,7 +190,7 @@ export class ActivityService {
         }
         if (analysisCount > 0 && summary.draftsCreated === 0) {
             recommendations.push(
-                'Analysis is being run but no follow-up emails have been drafted; email_draft_overdue_work turns findings into a follow-up in one step.'
+                'Analysis is being run; create saved Azure DevOps queries for categories with more than 3 items so follow-up stays in ADO.'
             );
         }
 

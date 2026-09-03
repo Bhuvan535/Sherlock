@@ -12,7 +12,7 @@
 - <Pro/Con>
 - <Risk/Trade-off>
 
-### KaarPulse Recommendation
+### S.H.E.R.L.O.C.K. Recommendation
 
 > <indicator> **Option <X>** is preferred if <Condition>.
 > 

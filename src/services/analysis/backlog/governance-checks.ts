@@ -2,7 +2,14 @@ import { daysBetween, parseAdoDate } from '../../../utils/dates.js';
 import { RELATION } from '../../../azure-devops/fields.js';
 import { relationTargetId } from '../../../azure-devops/work-item.service.js';
 import type { BacklogContext, Finding } from './types.js';
-import { estimateOf, isComplete, isIntentionallyWaiting, isOpen, typeKind } from './classify.js';
+import { estimateOf, isActive, isComplete, isIntentionallyWaiting, isOpen, typeKind } from './classify.js';
+import {
+    isAssignedToSprint,
+    isFutureSprint,
+    isPastSprint,
+    matchIteration,
+    requiresSprintAssignment
+} from './sprint-iteration.js';
 
 export function checkStatesOwnershipSprintDeps(ctx: BacklogContext): Finding[] {
     const findings: Finding[] = [];
@@ -109,20 +116,36 @@ export function checkStatesOwnershipSprintDeps(ctx: BacklogContext): Finding[] {
             }
         }
 
-        if (isOpen(item) && item.iterationPath && ctx.currentSprintPath) {
-            const looksPast =
-                /sprint\s*\d+/i.test(item.iterationPath) &&
-                item.iterationPath !== ctx.currentSprintPath &&
-                !item.iterationPath.startsWith(ctx.currentSprintPath);
-            if (looksPast && !item.iterationPath.toLowerCase().includes('future')) {
+        if (isOpen(item) && item.iterationPath && requiresSprintAssignment(item.type)) {
+            if (!isAssignedToSprint(item.iterationPath, ctx.iterations, ctx.currentSprintPath)) {
                 findings.push({
                     itemId: item.id,
-                    category: 'Possible Carry-Over / Stale Iteration',
+                    category: 'Not Assigned To A Sprint',
                     dimension: 'sprint',
-                    issue: `Still open in iteration ${item.iterationPath} (current is ${ctx.currentSprintPath})`,
-                    severity: 'Medium',
-                    reviewRecommended: true
+                    issue: `Iteration ${item.iterationPath} is the team/project backlog, not a dated sprint (S*)`,
+                    severity: 'Medium'
                 });
+            } else {
+                const iteration = matchIteration(item.iterationPath, ctx.iterations);
+                if (iteration && isPastSprint(iteration, ctx.now)) {
+                    findings.push({
+                        itemId: item.id,
+                        category: 'Open Work In Past Sprint',
+                        dimension: 'sprint',
+                        issue: `Still open in past sprint ${iteration.name} (${item.iterationPath})`,
+                        severity: 'High'
+                    });
+                }
+                if (iteration && isFutureSprint(iteration, ctx.now) && isActive(item)) {
+                    findings.push({
+                        itemId: item.id,
+                        category: 'Active Work In Future Sprint',
+                        dimension: 'sprint',
+                        issue: `In progress but scheduled in future sprint ${iteration.name}`,
+                        severity: 'Medium',
+                        reviewRecommended: true
+                    });
+                }
             }
         }
 

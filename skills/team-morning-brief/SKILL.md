@@ -45,7 +45,7 @@ triggers:
 
 ## Purpose
 
-Give the Team Lead, in one pass, an accurate picture of where the Platform team stands this morning and what deserves their attention first. The brief is grounded entirely in live Azure DevOps data and ends with a small number of concrete follow-ups, none of which KaarPulse can perform itself.
+Give the Team Lead, in one pass, an accurate picture of where the Platform team stands this morning and what deserves their attention first. The brief is grounded entirely in live Azure DevOps data and ends with a small number of concrete follow-ups, none of which S.H.E.R.L.O.C.K. can perform itself.
 
 This is a triage aid. It surfaces work that is late, stuck, unowned or at risk, and it shows how work is spread across the team. It is not a performance report and must never read like one.
 
@@ -60,9 +60,9 @@ Use a different skill when:
 - the question is about the project as a whole rather than today → `project-health-analysis`
 - the question is about the sprint's trajectory → `sprint-health-analysis`
 - the Team Lead wants a document to keep or forward → `daily-team-report`
-- the Team Lead wants to chase people about what the brief found → `team-email-assistant`
+- the Team Lead wants to chase people about what the brief found → `copy the report (email is not available)`
 
-The brief is frequently the first half of a combined request such as "brief me and draft reminders for the overdue items". In that case run this skill first, then hand the overdue set to `team-email-assistant`.
+The brief is frequently the first half of a combined request such as "brief me and draft reminders for the overdue items". In that case run this skill first, then hand the overdue set to `copy the report (email is not available)`.
 
 ## Required Inputs
 
@@ -78,7 +78,7 @@ Optional, if the Team Lead supplies them:
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. There are no other sources.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. There are no other sources.
 
 **Primary — one call assembles the whole brief:**
 
@@ -144,11 +144,11 @@ Each entry states the single strongest reason, not all of them.
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for Team Morning Brief:**
-1. **Header**: `# 📊 KaarPulse — Team Morning Brief`
+1. **Header**: `# 📊 S.H.E.R.L.O.C.K. — Team Morning Brief`
 2. **Executive Summary**: 1-2 sentences on the sprint state and the most critical items for today. Use a status indicator.
 3. **📌 At a Glance (KPI Table)**: Members, Active, Overdue, Due today, Due in 3 days, Blocked, Unassigned. Use `unknown` when a field cannot be measured.
 4. **🎯 TL Priority Queue**: Ranked top issues (severity, deadline, downstream impact, priority, workload, sprint impact). Each row: issue, count or `#id`, why now.
@@ -159,7 +159,7 @@ Use the templates from `_shared/templates/` to construct the response.
 9. **🧠 Insights**, **💡 Recommendations**, **🧭 TL Decision Support** (if a real choice exists), **🎯 Recommended Actions** (Today / This Week / Optional).
 10. **⚠️ Data Quality**. Footer: **ADO Work Items Modified: No**.
 
-Ensure you state that KaarPulse is read-only for Azure DevOps work items.
+Ensure you state that S.H.E.R.L.O.C.K. is read-only for Azure DevOps work items.
 
 ## Edge Cases
 
@@ -184,7 +184,7 @@ All of `_shared/safety-rules.md` applies. The points that bite most often here:
 - **Read-only for work items.** The brief will surface work that obviously needs reassigning, closing or rescheduling. You cannot do any of it. Creating a saved query via `ado_query_work_items` is allowed. End every brief stating no work items were modified, and when asked to act, offer a recommendation, a query link, or an email draft instead.
 - **No performance judgements.** Never call a team member slow, unproductive or overloaded as a characteristic. Describe the work, name the factors, offer the innocent explanations.
 - **No invented data.** Every id, title, owner, date and count comes from a tool call in this run. Unknown is not zero.
-- **No email as a side effect.** The brief never drafts or sends anything on its own. If the Team Lead wants reminders, hand over to `team-email-assistant`, which requires explicit confirmation before anything goes out.
+- **No email as a side effect.** The brief never drafts or sends anything on its own. If the Team Lead wants reminders, hand over to `copy the report (email is not available)`, which requires explicit confirmation before anything goes out.
 - **No credentials**, ever, including in error messages.
 
 ## Example Requests
@@ -194,5 +194,5 @@ All of `_shared/safety-rules.md` applies. The points that bite most often here:
 - "How is my team doing this morning?"
 - "Brief me — just the blockers and anything overdue."
 - "Morning brief, and tell me what changed since yesterday."
-- "Give me today's status and then draft reminders for anyone with overdue work." → this skill, then `team-email-assistant` (draft only; sending needs explicit confirmation).
+- "Give me today's status and then draft reminders for anyone with overdue work." → this skill, then `copy the report (email is not available)` (draft only; sending needs explicit confirmation).
 - "Give me the brief and tell me who should pick up the unassigned items." → this skill, then `work-assignment-recommendation` (recommendation only).

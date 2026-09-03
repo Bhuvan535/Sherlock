@@ -2,6 +2,14 @@ import type { WorkItem } from '../../../azure-devops/types.js';
 
 export type FindingSeverity = 'Critical' | 'High' | 'Medium' | 'Low';
 
+export interface IterationRef {
+    name: string;
+    path: string;
+    startDate: Date | null;
+    finishDate: Date | null;
+    timeFrame: 'past' | 'current' | 'future' | 'unknown';
+}
+
 export interface Finding {
     itemId: number;
     category: string;
@@ -21,6 +29,8 @@ export interface BacklogContext {
     currentSprintPath: string | null;
     currentSprintStart: Date | null;
     currentSprintEnd: Date | null;
+    /** Team iterations from Azure DevOps (dated sprints). Empty if the list could not be loaded. */
+    iterations: IterationRef[];
     now: Date;
     truncated: boolean;
     scannedLimit: number;

@@ -51,14 +51,14 @@ async function main() {
 
     const required = [
         'skill_execute',
-        'kaarflow_create_skill',
-        'kaarflow_update_skill',
-        'kaarflow_remove_skill',
-        'kaarflow_list_skills',
-        'kaarflow_get_skill',
-        'kaarflow_enable_skill',
-        'kaarflow_disable_skill',
-        'kaarflow_duplicate_skill'
+        'sherlock_create_skill',
+        'sherlock_update_skill',
+        'sherlock_remove_skill',
+        'sherlock_list_skills',
+        'sherlock_get_skill',
+        'sherlock_enable_skill',
+        'sherlock_disable_skill',
+        'sherlock_duplicate_skill'
     ];
     const missing = required.filter(t => !tools.includes(t));
     console.log('DIST_TOOLS', missing.length === 0 ? 'ALL_PRESENT' : `MISSING ${missing.join(',')}`);
@@ -107,7 +107,7 @@ async function main() {
     await exec('workload-analysis', 'brief');
     await exec('deadline-risk-analysis', 'visual');
 
-    const preview = await call('kaarflow_create_skill', {
+    const preview = await call('sherlock_create_skill', {
         name: 'weekly-platform-review-p16',
         description: 'Workload, sprint, overdue, blocked, recommendations.',
         analysisModules: ['workload', 'sprint', 'deadline', 'review'],
@@ -122,7 +122,7 @@ async function main() {
     console.log('CREATE_PREVIEW_ERROR', Boolean(preview.isError));
     console.log('CREATE_PREVIEW', textOf(preview).slice(0, 400));
 
-    const save = await call('kaarflow_create_skill', {
+    const save = await call('sherlock_create_skill', {
         name: 'weekly-platform-review-p16',
         description: 'Workload, sprint, overdue, blocked, recommendations.',
         analysisModules: ['workload', 'sprint', 'deadline', 'review'],
@@ -136,25 +136,25 @@ async function main() {
     });
     console.log('CREATE_SAVE', textOf(save).slice(0, 250), 'err', Boolean(save.isError));
 
-    const listed = await call('kaarflow_list_skills', {});
+    const listed = await call('sherlock_list_skills', {});
     const listMd = String(payload(listed).list ?? '');
     console.log('LIST_HAS_CUSTOM', listMd.includes('weekly-platform-review-p16'));
 
     await exec('weekly-platform-review-p16', 'brief');
 
-    const updPrev = await call('kaarflow_update_skill', {
+    const updPrev = await call('sherlock_update_skill', {
         name: 'weekly-platform-review-p16',
         analysisModules: ['workload', 'sprint', 'deadline', 'review', 'stale-work'],
         confirm: false
     });
     console.log('UPDATE_PREVIEW', /PREVIEW/i.test(textOf(updPrev)));
-    const upd = await call('kaarflow_update_skill', {
+    const upd = await call('sherlock_update_skill', {
         name: 'weekly-platform-review-p16',
         analysisModules: ['workload', 'sprint', 'deadline', 'review', 'stale-work'],
         confirm: true
     });
     console.log('UPDATE_SAVE', textOf(upd).slice(0, 200));
-    const shown = await call('kaarflow_get_skill', { name: 'weekly-platform-review-p16' });
+    const shown = await call('sherlock_get_skill', { name: 'weekly-platform-review-p16' });
     console.log('GET_AFTER_UPDATE', String(payload(shown).markdown ?? '').slice(0, 500));
     await exec('weekly-platform-review-p16', 'visual');
 

@@ -84,7 +84,7 @@ describe('exposed tool surface', () => {
     });
 
     it('names every tool with an allowed verb, except saved-query creation', () => {
-        const readVerb = /^(ado_(get|search|refresh|query)_|analysis_|tl_(get|analyze|purge)_|skill_(list|get|execute)$|kaarflow_(create|compose|list|update|remove|enable|disable|duplicate|get)_skills?$|create_ado_query$|sherlock_health_check$)/;
+        const readVerb = /^(ado_(get|search|refresh|query)_|analysis_|tl_(get|analyze|purge)_|skill_(list|get|execute)$|sherlock_(create|compose|list|update|remove|enable|disable|duplicate|get)_skills?$|create_ado_query$|sherlock_health_check$)/;
         for (const tool of tools) {
             expect(tool.name, `tool ${tool.name} is not named as a read operation`).toMatch(readVerb);
         }
@@ -93,7 +93,7 @@ describe('exposed tool surface', () => {
     it('has no tool containing a mutation verb except create_ado_query', () => {
         const mutationVerbs = ['create', 'add', 'new', 'update', 'edit', 'modify', 'delete', 'remove'];
         for (const tool of tools) {
-            if (tool.name === 'create_ado_query' || tool.name.startsWith('kaarflow_')) continue;
+            if (tool.name === 'create_ado_query' || tool.name.startsWith('sherlock_')) continue;
             for (const verb of mutationVerbs) {
                 expect(tool.name.toLowerCase(), `tool ${tool.name} contains mutation verb "${verb}"`).not.toContain(verb);
             }

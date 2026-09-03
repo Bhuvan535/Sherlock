@@ -74,7 +74,7 @@ Optional, and frequently supplied:
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. There are no other sources.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. There are no other sources.
 
 **Primary:**
 
@@ -129,11 +129,11 @@ If `ado_get_sprint_progress` fails, fall back to `ado_get_work_items_by_sprint` 
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for Sprint Health Analysis:**
-1. **Header**: `# 📊 KaarPulse — Sprint Health Analysis`
+1. **Header**: `# 📊 S.H.E.R.L.O.C.K. — Sprint Health Analysis`
 2. **Sprint Info & Executive Summary**: Sprint name, dates, days elapsed/remaining. Include a sprint navigation link only if a tool returned it.
 3. **🏃 Sprint Health**: progress bar from measured completion only. KPI table: Total, Completed, Remaining, Overdue, Blocked.
 4. **🚨 Risks**: overdue, blocked, carry-over, missing estimates, schedule variance — groups not dumps.
@@ -157,7 +157,7 @@ Use the templates from `_shared/templates/` to construct the response.
 | Mid-sprint additions appear | Report them from `analysis_team_productivity` as measured additions, and note that removals cannot be detected, so this is not a full scope-change picture. |
 | The sprint is already over (`timeFrame` past) | Say the sprint has ended and report it as a retrospective snapshot, not as progress. Completion figures are final, not in flight. |
 | A list hit its `limit` | Say the list was truncated and give the limit beside the count. |
-| The Team Lead asks to move an item out of the sprint | Refuse the change, state that KaarPulse is read-only for Azure DevOps, and offer the recommendation or an email draft via `team-email-assistant`. |
+| The Team Lead asks to move an item out of the sprint | Refuse the change, state that S.H.E.R.L.O.C.K. is read-only for Azure DevOps, and offer the recommendation or an email draft via `copy the report (email is not available)`. |
 | Azure DevOps unreachable or PAT invalid | Report that the analysis could not be produced and suggest `ado_get_connection_status`. Never estimate progress. |
 
 ## Safety Rules
@@ -168,7 +168,7 @@ All of `_shared/safety-rules.md` applies. The points that bite most often here:
 - **No fabricated forecast.** Velocity, burndown projections and completion dates are forbidden unless a tool actually returned them, and none of these tools does. Saying "not calculated" with the reason is the correct answer.
 - **Unknown is not zero.** Unset points, unset capacity, unset iteration dates and a missing due-date field are each reported as what they are.
 - **No performance judgements.** Low completion is a fact about the sprint, not about the team. Offer the innocent explanations — large items, blocked dependencies, mid-sprint additions, absence.
-- **No email as a side effect.** If the sprint position needs communicating, hand over to `team-email-assistant`, where sending requires explicit confirmation.
+- **No email as a side effect.** If the sprint position needs communicating, hand over to `copy the report (email is not available)`, where sending requires explicit confirmation.
 
 ## Example Requests
 
@@ -179,4 +179,4 @@ All of `_shared/safety-rules.md` applies. The points that bite most often here:
 - "What came over from the previous sprint?"
 - "Are we going to finish everything this sprint?" → answered with the measured position; a forecast is refused with the reason.
 - "Sprint health, then who is overloaded inside it?" → this skill, then `workload-analysis`.
-- "Sprint status and draft a summary for the team." → this skill, then `team-email-assistant` (draft only; sending needs explicit confirmation).
+- "Sprint status and draft a summary for the team." → this skill, then `copy the report (email is not available)` (draft only; sending needs explicit confirmation).

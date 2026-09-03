@@ -78,7 +78,7 @@ Optional, if the Team Lead supplies them:
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. There are no other sources.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. There are no other sources.
 
 **Primary:**
 
@@ -145,11 +145,11 @@ Where a named dimension draws on more than one server dimension, take the worst 
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for Project Health Analysis:**
-1. **Header**: `# 🏥 Project Health` (or `# 📊 KaarPulse — Project Health`)
+1. **Header**: `# 🏥 Project Health` (or `# 📊 S.H.E.R.L.O.C.K. — Project Health`)
 2. **Executive Summary**: State overall status and **why** in 1-2 sentences. A score without explanation is a defect.
 3. **📌 Health dimensions**:
    | Dimension | Status | Evidence |
@@ -182,7 +182,7 @@ Use the templates from `_shared/templates/` to construct the response.
 | The project has almost no work items | Say the sample is too small for meaningful ratings, print the counts, and avoid a confident overall. |
 | Custom state names | Reason about done-versus-in-flight from `stateCategory`, display the literal `state`, and call `ado_get_work_item_types` before any state filter. |
 | `analysis_project` times out or fails | Fall back to `analysis_project_health` plus the supporting primitives, and name the sections that came from the fallback path. |
-| The Team Lead asks you to fix something the report found | Refuse the change, state that KaarPulse is read-only for Azure DevOps, and offer the recommendation or an email draft via `team-email-assistant`. |
+| The Team Lead asks you to fix something the report found | Refuse the change, state that S.H.E.R.L.O.C.K. is read-only for Azure DevOps, and offer the recommendation or an email draft via `copy the report (email is not available)`. |
 | Azure DevOps unreachable or PAT invalid | Report that the analysis could not be produced and suggest `ado_get_connection_status`. Never guess a rating. |
 
 ## Safety Rules

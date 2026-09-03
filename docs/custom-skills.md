@@ -23,21 +23,21 @@ The server must **preview** (`confirm=false` / preview path) before persist (`co
 
 | Tool | Action |
 | --- | --- |
-| `kaarflow_compose_skill` | Union modules from named skills + extra modules |
-| `kaarflow_create_skill` | Create from an explicit definition |
-| `kaarflow_list_skills` | List built-in and custom |
-| `kaarflow_get_skill` | Get one definition |
-| `kaarflow_update_skill` | Update custom only |
-| `kaarflow_remove_skill` | Delete custom only |
-| `kaarflow_enable_skill` / `kaarflow_disable_skill` | Toggle custom |
-| `kaarflow_duplicate_skill` | Clone built-in or custom into a new custom skill |
+| `sherlock_compose_skill` | Union modules from named skills + extra modules |
+| `sherlock_create_skill` | Create from an explicit definition |
+| `sherlock_list_skills` | List built-in and custom |
+| `sherlock_get_skill` | Get one definition |
+| `sherlock_update_skill` | Update custom only |
+| `sherlock_remove_skill` | Delete custom only |
+| `sherlock_enable_skill` / `sherlock_disable_skill` | Toggle custom |
+| `sherlock_duplicate_skill` | Clone built-in or custom into a new custom skill |
 | `skill_execute` | Run built-in or custom |
 
 Built-in skills cannot be edited, disabled, or deleted. Duplicate them instead.
 
 ## Composition
 
-`kaarflow_compose_skill` flattens source skills into a **module union**, deduplicates ids, then one `SkillExecutor` run with a shared `DataAggregator` cache.
+`sherlock_compose_skill` flattens source skills into a **module union**, deduplicates ids, then one `SkillExecutor` run with a shared `DataAggregator` cache.
 
 Example: `sprint-health-analysis` + `workload-analysis` + `stale-work-analysis` + `deadline-risk-analysis` → modules such as `sprint`, `workload`, `stale-work`, `deadline` (plus required dependencies like `team-capacity`).
 

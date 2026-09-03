@@ -60,7 +60,7 @@ Use a different skill when:
 - the question is about delivery trends across several sprints rather than one week → `team-productivity-review`
 - the question is about the Team Lead's own activity alone → `tl-productivity-review`
 - the question is only about what is stuck or at risk → the matching focused analysis skill
-- the review needs to go to the team by email → produce it here, then hand over to `team-email-assistant`. There is no weekly template, so the body is composed through the generic drafting tool, and sending requires explicit confirmation of that specific draft.
+- the review needs to go to the team by email → produce it here, then hand over to `copy the report (email is not available)`. There is no weekly template, so the body is composed through the generic drafting tool, and sending requires explicit confirmation of that specific draft.
 
 ## Required Inputs
 
@@ -79,7 +79,7 @@ Optional, if the Team Lead supplies them:
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. Two kinds of data are combined — live Azure DevOps state and the local audit trail — and they must not be conflated.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. Two kinds of data are combined — live Azure DevOps state and the local audit trail — and they must not be conflated.
 
 **Primary:**
 
@@ -149,11 +149,11 @@ If `tl_get_weekly_review` fails, build the review from `analysis_team_productivi
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for Weekly Team Review:**
-1. **Header**: `# 📊 KaarPulse — Weekly Team Review`
+1. **Header**: `# 📊 S.H.E.R.L.O.C.K. — Weekly Team Review`
 2. **Executive Summary** of planned vs actual vs completed where measured.
 3. **📌 KPIs** and **📈 Weekly Trends** (only with enough data points; otherwise say so).
 4. **🔥 Recurring Problems** — groups with counts, not dumps.
@@ -180,7 +180,7 @@ Use `unknown` where a value could not be measured and `—` where it does not ap
 | A list reached its `limit` | Say the result was truncated and give the limit next to the count. |
 | Cross-team dependencies are detected | Report them with the ids and the direction of the dependency, and note that the detection keys off the configured team's area paths, so the other team's name may not resolve. |
 | The Team Lead asks to compare against last week's report | There is no stored report and no snapshot history. Offer what revision history supports — `ado_get_recently_changed_items` and the carry-over evidence — and say the rest is unavailable. |
-| The Team Lead asks to send the review to the team | Hand over to `team-email-assistant`. There is no weekly template, so the body is composed from these measured facts through the generic drafting tool, and sending requires explicit confirmation of that draft. |
+| The Team Lead asks to send the review to the team | Hand over to `copy the report (email is not available)`. There is no weekly template, so the body is composed from these measured facts through the generic drafting tool, and sending requires explicit confirmation of that draft. |
 | `tl_get_weekly_review` fails | Rebuild from `analysis_team_productivity`, `ado_get_sprint_progress` and `ado_get_recently_changed_items`, name the missing sections and quote the tool's user-facing message. |
 | Azure DevOps is unreachable or the PAT is invalid | Say the review could not be produced and suggest `ado_get_connection_status`. Never guess at a number. |
 
@@ -193,7 +193,7 @@ All of `_shared/safety-rules.md` applies. The points that bite hardest here:
 - **No manufactured precision.** No velocity, no forecast for next week, no percentage likelihood. Risk and health stay categorical with their reasons attached.
 - **The audit trail's blind spot must be stated** wherever assistant activity appears, so a quiet trail is never read as a quiet week.
 - **Read-only for work items.** Everything the review suggests happens in Azure DevOps, by a human. Saved queries via `ado_query_work_items` are allowed. Every run states no work items were modified.
-- **No email as a side effect.** Sharing the review means handing over to `team-email-assistant`, where sending requires explicit per-draft confirmation.
+- **No email as a side effect.** Sharing the review means handing over to `copy the report (email is not available)`, where sending requires explicit per-draft confirmation.
 
 ## Example Requests
 
@@ -204,4 +204,4 @@ All of `_shared/safety-rules.md` applies. The points that bite hardest here:
 - "Review the week — I want the recurring blockers in particular."
 - "What changed this week?" → `ado_get_recently_changed_items` with `days: 7`, presented as the changes section.
 - "Compare this week with last week." → only what revision history supports; say plainly that there is no stored snapshot of last week.
-- "Weekly review, then email it to the team." → this skill, then `team-email-assistant` (no weekly template, so the body is composed from these facts; sending needs explicit confirmation).
+- "Weekly review, then email it to the team." → this skill, then `copy the report (email is not available)` (no weekly template, so the body is composed from these facts; sending needs explicit confirmation).

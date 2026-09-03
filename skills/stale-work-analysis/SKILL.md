@@ -71,7 +71,7 @@ Never judge the assignee. Stale is a signal about the item.
 
 Follow `_shared/output-format.md`.
 
-1. `# 📊 KaarPulse — Stale Work`
+1. `# 📊 S.H.E.R.L.O.C.K. — Stale Work`
 2. Executive summary.
 3. **📌 At a Glance** — analysed, stale total, 7 / 14 / 30 counts.
 4. Table: Category | Count | Oldest Item | Query.

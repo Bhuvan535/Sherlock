@@ -259,7 +259,7 @@ Verify at least:
 - tools register
 - `sherlock_health_check`
 - `skill_list` / `skill_execute`
-- custom skill tools (`kaarflow_*`)
+- custom skill tools (`sherlock_*`)
 - an `ado_*` read
 - `create_ado_query` (if your PAT allows query write)
 

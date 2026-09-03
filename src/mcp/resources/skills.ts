@@ -4,11 +4,11 @@ import { createLogger } from '../../utils/logger.js';
 
 const log = createLogger('mcp-skill-resources');
 
-export const SKILL_INDEX_URI = 'skill://kaarpulse/index';
-export const SKILL_SHARED_RULES_URI = 'skill://kaarpulse/_shared/rules';
+export const SKILL_INDEX_URI = 'skill://sherlock/index';
+export const SKILL_SHARED_RULES_URI = 'skill://sherlock/_shared/rules';
 
 export function skillUri(name: string): string {
-    return `skill://kaarpulse/${name}`;
+    return `skill://sherlock/${name}`;
 }
 
 /**
@@ -22,7 +22,7 @@ export function registerSkillResources(server: McpServer): void {
     const skills = getSkills();
 
     server.registerResource(
-        'kaarpulse-skill-index',
+        'sherlock-skill-index',
         SKILL_INDEX_URI,
         {
             title: 'Skill catalogue',
@@ -39,7 +39,7 @@ export function registerSkillResources(server: McpServer): void {
                             count: skills.length,
                             skills: skills.map(toIndexEntry),
                             azureDevOpsAccess: 'read-only',
-                            emailRule: 'Email sending always requires explicit per-draft confirmation from the Team Lead.'
+                            emailRule: 'V1 has no email send path. Azure DevOps work items are read-only; saved queries are the only controlled mutation.'
                         },
                         null,
                         2
@@ -50,7 +50,7 @@ export function registerSkillResources(server: McpServer): void {
     );
 
     server.registerResource(
-        'kaarpulse-skill-shared-rules',
+        'sherlock-skill-shared-rules',
         SKILL_SHARED_RULES_URI,
         {
             title: 'Shared skill rules',
@@ -72,7 +72,7 @@ export function registerSkillResources(server: McpServer): void {
 
     for (const skill of skills) {
         server.registerResource(
-            `kaarpulse-skill-${skill.name}`,
+            `sherlock-skill-${skill.name}`,
             skillUri(skill.name),
             {
                 title: `Skill: ${skill.title}`,

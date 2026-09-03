@@ -31,12 +31,12 @@ async function main() {
         tools.push(...page.tools.map(t => t.name));
         cursor = page.nextCursor;
     } while (cursor);
-    console.log('HAS_COMPOSE', tools.includes('kaarflow_compose_skill'));
+    console.log('HAS_COMPOSE', tools.includes('sherlock_compose_skill'));
 
     const call = async (name: string, args: Record<string, unknown>) =>
         (await client.callTool({ name, arguments: args })) as CallToolResult;
 
-    const preview = await call('kaarflow_compose_skill', {
+    const preview = await call('sherlock_compose_skill', {
         name: 'weekly-management-review-p18',
         description: 'Weekly management overview for the Platform team.',
         request: 'combining sprint health, workload, backlog quality and delivery risk',
@@ -45,7 +45,7 @@ async function main() {
     console.log('PREVIEW_ERR', Boolean(preview.isError));
     console.log(textOf(preview).slice(0, 900));
 
-    const save = await call('kaarflow_compose_skill', {
+    const save = await call('sherlock_compose_skill', {
         name: 'weekly-management-review-p18',
         description: 'Weekly management overview for the Platform team.',
         sourceSkills: [

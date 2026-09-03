@@ -1,6 +1,6 @@
 import type { WorkItem } from '../../../azure-devops/types.js';
 import type { BacklogContext, CategoryResult, Finding, FindingSeverity } from './types.js';
-import { kaarFlowQueryName } from './classify.js';
+import { sherlockQueryName } from './classify.js';
 
 const RANK: Record<FindingSeverity, number> = { Critical: 4, High: 3, Medium: 2, Low: 1 };
 
@@ -17,6 +17,9 @@ const CATEGORY_BLURB: Record<string, string> = {
     'Stale Active Work 7+ Days': 'Open items unchanged for 7 or more days',
     'Overdue Work': 'Open items past planned end',
     'Overdue High Priority Work': 'High-priority open items past planned end',
+    'Not Assigned To A Sprint': 'Stories, tasks and bugs on the team/project backlog instead of a dated sprint',
+    'Open Work In Past Sprint': 'Open stories, tasks or bugs still on a sprint whose dates have ended',
+    'Active Work In Future Sprint': 'In-progress stories, tasks or bugs assigned to a future sprint',
     'Potential Duplicate': 'Open items sharing the same title',
     'Blocked Work': 'Items marked blocked'
 };
@@ -55,8 +58,8 @@ export function groupFindings(findings: Finding[], byId: Map<number, WorkItem>):
             severity: worst,
             reviewRecommended: review,
             description: blurb,
-            queryName: kaarFlowQueryName(category),
-            queryDescription: `${blurb}. Identified during KaarFlow backlog governance analysis.`,
+            queryName: sherlockQueryName(category),
+            queryDescription: `${blurb}. Identified during S.H.E.R.L.O.C.K. backlog governance analysis.`,
             createQuery: ids.length > 3,
             itemIds: ids,
             samples
@@ -131,6 +134,7 @@ export function buildLimitations(ctx: BacklogContext): string[] {
     if (!ctx.fields.acceptanceCriteria) {
         notes.push('Acceptance Criteria was not available on this process, so story AC checks were skipped.');
     }
+    notes.push('Stories, tasks and bugs are expected on a dated sprint (S*). Epics and Features may stay on the team backlog.');
     notes.push('Dependency analysis is limited to relations Azure DevOps returned on the scanned items.');
     notes.push('WIQL cannot express every structural check; saved queries for those categories use an ID IN list of the measured items.');
     return notes;

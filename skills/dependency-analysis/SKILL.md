@@ -18,7 +18,7 @@ supporting_tools:
   - ado_get_work_item
   - ado_query_work_items
 missing_capabilities:
-  - "KaarPulse cannot add, remove or complete predecessor links."
+  - "S.H.E.R.L.O.C.K. cannot add, remove or complete predecessor links."
   - "WIQL cannot project relation rows; saved queries list the item set, while blocker → downstream is shown in this response from analysis tools."
   - "There is no saved-query discovery tool. Reuse happens only via QUERY_ALREADY_EXISTS."
 triggers:
@@ -70,7 +70,7 @@ Blocker  →  Downstream items  →  Potential impact
 
 Use real ids and titles. Include work-item navigation from tool `webUrl` fields when present — never invent URLs. Query links come only from `ado_query_work_items`.
 
-6. **Recommend** unblock order. KaarPulse cannot complete predecessors. No work items are modified.
+6. **Recommend** unblock order. S.H.E.R.L.O.C.K. cannot complete predecessors. No work items are modified.
 
 ## Analysis Rules
 
@@ -89,7 +89,7 @@ Do not blame a person for a cross-team wait.
 
 Follow `_shared/output-format.md`.
 
-1. `# 📊 KaarPulse — Dependency Analysis`
+1. `# 📊 S.H.E.R.L.O.C.K. — Dependency Analysis`
 2. Executive summary naming the top blocker.
 3. **📌 At a Glance** — blocked count, items blocking others, cross-team, circular.
 4. **🔗 Dependency Impact** — blocker → downstream → impact, with ids.
@@ -104,7 +104,7 @@ Follow `_shared/output-format.md`.
 | Nothing blocked and no links | Say so. Short response. No queries. |
 | Count <= 3 blocked | List them with evidence. Skip query unless asked. |
 | Scan truncated | State the limit. Do not present the chain list as complete. |
-| Cross-team blocker | Recommend a conversation; KaarPulse cannot change the other team. |
+| Cross-team blocker | Recommend a conversation; S.H.E.R.L.O.C.K. cannot change the other team. |
 | Circular dependency | Report the loop. Human fix in Azure DevOps. |
 | Query creation fails | Keep the impact diagram; no fake query URL. |
 | Team Lead asks to add a predecessor | Refuse. Read-only for work items. |

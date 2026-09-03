@@ -36,7 +36,7 @@ describe('brief standup formatting', () => {
             recommendations: [{ priority: 'medium', action: 'Unblock #1', reason: 'blocked' }],
             queries: []
         });
-        expect(md).toContain('# 🌅 Daily Standup');
+        expect(md).toContain('# 📊 S.H.E.R.L.O.C.K. — Daily Standup');
         expect(md).toContain('| Active | 5 |');
         expect(md).toContain('Due-date overdue');
         expect(md).toContain('Planned-end overdue');

@@ -33,14 +33,14 @@ afterEach(async () => {
     harness?.reset();
 });
 
-describe('kaarflow_compose_skill', () => {
+describe('sherlock_compose_skill', () => {
     it('is exposed on the MCP surface', async () => {
         const tools = await mcp.listTools();
-        expect(tools.map(t => t.name)).toContain('kaarflow_compose_skill');
+        expect(tools.map(t => t.name)).toContain('sherlock_compose_skill');
     });
 
     it('previews without saving', async () => {
-        const preview = await mcp.callTool('kaarflow_compose_skill', {
+        const preview = await mcp.callTool('sherlock_compose_skill', {
             name: 'weekly-management-review',
             description: 'Weekly management overview for the Platform team.',
             sourceSkills: [
@@ -60,7 +60,7 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('persists after confirmation and executes once per module', async () => {
-        const saved = await mcp.callTool('kaarflow_compose_skill', {
+        const saved = await mcp.callTool('sherlock_compose_skill', {
             name: 'weekly-management-review',
             description: 'Weekly management overview for the Platform team.',
             sourceSkills: [
@@ -97,7 +97,7 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('rejects mutation intents', async () => {
-        const result = await mcp.callTool('kaarflow_compose_skill', {
+        const result = await mcp.callTool('sherlock_compose_skill', {
             name: 'mutate-board',
             description: 'Assign overdue work items to people automatically',
             modules: ['workload'],
@@ -108,21 +108,21 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('increments version on update', async () => {
-        const saved = await mcp.callTool('kaarflow_compose_skill', {
+        const saved = await mcp.callTool('sherlock_compose_skill', {
             name: 'compose-versioned',
             modules: ['sprint', 'workload'],
             confirm: true
         });
         expect(saved.isError).toBeFalsy();
         expect(InternalSkillRegistry.getSkill('compose-versioned')?.name).toBe('compose-versioned');
-        const preview = await mcp.callTool('kaarflow_update_skill', {
+        const preview = await mcp.callTool('sherlock_update_skill', {
             name: 'compose-versioned',
             analysisModules: ['sprint', 'workload', 'stale-work'],
             confirm: false
         });
         expect(textOf(preview)).toMatch(/PREVIEW/i);
         expect(getCustomSkillRepository().getVersion('compose-versioned')).toBe(1);
-        const updated = await mcp.callTool('kaarflow_update_skill', {
+        const updated = await mcp.callTool('sherlock_update_skill', {
             name: 'compose-versioned',
             analysisModules: ['sprint', 'workload', 'stale-work'],
             confirm: true
@@ -133,13 +133,13 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('rejects builtin edit, disable and delete', async () => {
-        const update = await mcp.callTool('kaarflow_update_skill', {
+        const update = await mcp.callTool('sherlock_update_skill', {
             name: 'daily-standup-starter',
             analysisModules: ['sprint'],
             confirm: true
         });
-        const disable = await mcp.callTool('kaarflow_disable_skill', { name: 'daily-standup-starter' });
-        const remove = await mcp.callTool('kaarflow_remove_skill', { name: 'daily-standup-starter', confirm: true });
+        const disable = await mcp.callTool('sherlock_disable_skill', { name: 'daily-standup-starter' });
+        const remove = await mcp.callTool('sherlock_remove_skill', { name: 'daily-standup-starter', confirm: true });
         expect(update.isError).toBe(true);
         expect(disable.isError).toBe(true);
         expect(remove.isError).toBe(true);
@@ -147,18 +147,18 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('disables a custom skill so execution is rejected, then re-enables it', async () => {
-        await mcp.callTool('kaarflow_compose_skill', {
+        await mcp.callTool('sherlock_compose_skill', {
             name: 'weekly-management-review',
             modules: ['sprint'],
             confirm: true
         });
-        const disabled = await mcp.callTool('kaarflow_disable_skill', { name: 'weekly-management-review' });
+        const disabled = await mcp.callTool('sherlock_disable_skill', { name: 'weekly-management-review' });
         expect(disabled.isError).toBeFalsy();
         InternalSkillRegistry.loadFromDatabase();
         expect(InternalSkillRegistry.getSkill('weekly-management-review')?.status).toBe('disabled');
         const blocked = await mcp.callTool('skill_execute', { name: 'weekly-management-review' });
         expect(blocked.isError).toBe(true);
-        const enabled = await mcp.callTool('kaarflow_enable_skill', { name: 'weekly-management-review' });
+        const enabled = await mcp.callTool('sherlock_enable_skill', { name: 'weekly-management-review' });
         expect(enabled.isError).toBeFalsy();
         InternalSkillRegistry.loadFromDatabase();
         const run = await mcp.callTool('skill_execute', { name: 'weekly-management-review', mode: 'brief' });
@@ -166,7 +166,7 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('does not persist an ambiguous management report', async () => {
-        const result = await mcp.callTool('kaarflow_compose_skill', {
+        const result = await mcp.callTool('sherlock_compose_skill', {
             name: 'management-report',
             request: 'Give me a management report.',
             confirm: true
@@ -177,7 +177,7 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('offers recommended analysis without saving for a slipping sprint', async () => {
-        const result = await mcp.callTool('kaarflow_compose_skill', {
+        const result = await mcp.callTool('sherlock_compose_skill', {
             name: 'sprint-slip',
             request: 'I want to understand why the sprint is slipping.',
             confirm: true
@@ -187,18 +187,18 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('keeps composed skill C unchanged after source skill A is edited', async () => {
-        await mcp.callTool('kaarflow_compose_skill', {
+        await mcp.callTool('sherlock_compose_skill', {
             name: 'skill-a-source',
             modules: ['workload', 'deadline'],
             confirm: true
         });
-        await mcp.callTool('kaarflow_compose_skill', {
+        await mcp.callTool('sherlock_compose_skill', {
             name: 'skill-c-snapshot',
             sourceSkills: ['skill-a-source', 'sprint-health-analysis'],
             confirm: true
         });
         const before = InternalSkillRegistry.getSkill('skill-c-snapshot')!.analysisModules;
-        await mcp.callTool('kaarflow_update_skill', {
+        await mcp.callTool('sherlock_update_skill', {
             name: 'skill-a-source',
             analysisModules: ['stale-work'],
             confirm: true
@@ -208,7 +208,7 @@ describe('kaarflow_compose_skill', () => {
     });
 
     it('writes audit rows with skill subject for compose and execute', async () => {
-        await mcp.callTool('kaarflow_compose_skill', {
+        await mcp.callTool('sherlock_compose_skill', {
             name: 'weekly-management-review',
             modules: ['sprint'],
             confirm: true
@@ -218,13 +218,13 @@ describe('kaarflow_compose_skill', () => {
             'SELECT tool, subject_ref, action FROM tl_activity WHERE subject_ref LIKE ?',
             ['skill:weekly-management-review']
         );
-        expect(rows.some(r => r.tool === 'kaarflow_compose_skill')).toBe(true);
+        expect(rows.some(r => r.tool === 'sherlock_compose_skill')).toBe(true);
         expect(rows.some(r => r.tool === 'skill_execute')).toBe(true);
         expect(JSON.stringify(rows)).not.toMatch(/PAT|password|secret/i);
     });
 
     it('lists a grouped capability catalogue', async () => {
-        const listed = await mcp.callTool('kaarflow_list_skills', {});
+        const listed = await mcp.callTool('sherlock_list_skills', {});
         const text = textOf(listed);
         expect(text).toContain('## Sprint');
         expect(text).toContain('## My Skills');

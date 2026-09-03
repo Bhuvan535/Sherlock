@@ -65,7 +65,7 @@ Recommendations are advisory. Token strategy: shared aggregator, compact DTOs, q
 - Conversational: “How is my team doing?” → `skill_execute` `daily-standup-starter` or `team-morning-brief`
 - Programmatic: MCP tool `skill_execute` with name + mode
 
-Compound **saved** workflows should be composed once (`kaarflow_compose_skill`) instead of four separate executes. See [CUSTOM-SKILLS.md](CUSTOM-SKILLS.md).
+Compound **saved** workflows should be composed once (`sherlock_compose_skill`) instead of four separate executes. See [CUSTOM-SKILLS.md](CUSTOM-SKILLS.md).
 
 ## Safety
 

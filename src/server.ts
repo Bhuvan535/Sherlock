@@ -49,7 +49,7 @@ WHERE TO START
 - "Who is overloaded?" -> \`skill_execute\` \`workload-analysis\`
 - "What is at risk?" -> \`skill_execute\` \`deadline-risk-analysis\`
 - "Who should take #1234?" -> \`skill_execute\` \`work-assignment-recommendation\`
-- Combine skills -> \`kaarflow_compose_skill\` (confirm=false, then true)
+- Combine skills -> \`sherlock_compose_skill\` (confirm=false, then true)
 - One-off lookups -> \`ado_*\` tools
 - Prompts (daily_team_review, sprint_review, tl_weekly_review) still orchestrate workflows.`;
 

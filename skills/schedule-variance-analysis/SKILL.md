@@ -77,7 +77,7 @@ Do not rank people. Variance is about the item.
 
 Follow `_shared/output-format.md`.
 
-1. `# 📊 KaarPulse — Schedule Variance`
+1. `# 📊 S.H.E.R.L.O.C.K. — Schedule Variance`
 2. Executive summary.
 3. **📌 At a Glance** — analysed, with variance data, excluded (missing dates).
 4. Category table: Category | Count | Avg Variance | Query.

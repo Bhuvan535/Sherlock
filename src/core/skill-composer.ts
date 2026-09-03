@@ -332,7 +332,7 @@ export function resolveNaturalLanguageIntent(request: string): IntentResolution 
         modules: parsed.modules,
         message:
             parsed.sourceSkills.length + parsed.modules.length === 0
-                ? 'No matching KaarFlow capability. Try sprint health, workload, backlog quality, or stale work.'
+                ? 'No matching S.H.E.R.L.O.C.K. capability. Try sprint health, workload, backlog quality, or stale work.'
                 : `Matched: ${[...parsed.sourceSkills, ...parsed.modules].join(', ')}.`
     };
 }
@@ -349,7 +349,7 @@ export function formatCapabilityCatalogue(custom: { name: string; description: s
         { title: 'Productivity', items: ['team-productivity-review', 'tl-productivity-review'] },
         { title: 'Delivery', items: ['delivery-forecast', 'project-health-analysis'] }
     ];
-    const lines = ['# What KaarFlow can analyse', ''];
+    const lines = ['# What S.H.E.R.L.O.C.K. can analyse', ''];
     for (const group of groups) {
         lines.push(`## ${group.title}`);
         for (const name of group.items) {

@@ -88,6 +88,6 @@ export function isWeakDescription(text: string | null, kind: ReturnType<typeof t
     return false;
 }
 
-export function kaarFlowQueryName(category: string): string {
-    return `KaarFlow - ${category}`;
+export function sherlockQueryName(category: string): string {
+    return category;
 }

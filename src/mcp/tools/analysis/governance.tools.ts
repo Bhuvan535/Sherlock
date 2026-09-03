@@ -5,6 +5,7 @@ import { getSprintService } from '../../../azure-devops/sprint.service.js';
 import { getProjectContext } from '../../../azure-devops/context.js';
 import { FieldMappingService } from '../../../azure-devops/field-mapping.js';
 import { getConfig } from '../../../config/env.js';
+import { getTeamSavedQueryFolder } from '../../../azure-devops/write-client.js';
 import { registerTool } from '../../tool-registry.js';
 import { buildEnvelope } from '../../../services/analysis/types.js';
 import { analyseBacklog, buildRelationMaps } from '../../../services/analysis/governance.service.js';
@@ -28,12 +29,13 @@ export function registerGovernanceTools(server: McpServer): void {
             const wiService = getWorkItemService();
             const fieldMap = new FieldMappingService(config.ado.project);
 
-            const [itemsPage, mapping, types, members, sprint, available] = await Promise.all([
+            const [itemsPage, mapping, types, members, sprint, iterations, available] = await Promise.all([
                 wiService.query([], { limit: SCAN_LIMIT, includeCompleted: true, includeRelations: true }),
                 fieldMap.getCanonicalMap(),
                 getProjectContext().getWorkItemTypeNames(),
                 getTeamService().getMembers().catch(() => []),
                 getSprintService().getCurrentSprint().catch(() => null),
+                getSprintService().getIterations().catch(() => []),
                 getProjectContext().getAvailableFields()
             ]);
 
@@ -63,6 +65,13 @@ export function registerGovernanceTools(server: McpServer): void {
                 currentSprintPath: sprint?.path ?? null,
                 currentSprintStart: sprint?.startDate ? new Date(sprint.startDate) : null,
                 currentSprintEnd: sprint?.finishDate ? new Date(sprint.finishDate) : null,
+                iterations: iterations.map(it => ({
+                    name: it.name,
+                    path: it.path,
+                    startDate: it.startDate ? new Date(it.startDate) : null,
+                    finishDate: it.finishDate ? new Date(it.finishDate) : null,
+                    timeFrame: it.timeFrame
+                })),
                 now: new Date(),
                 truncated,
                 scannedLimit: SCAN_LIMIT,
@@ -119,7 +128,7 @@ export function registerGovernanceTools(server: McpServer): void {
                 })),
                 queryHints: result.queryHints,
                 defaultColumns: result.defaultColumns,
-                queryFolder: 'My Queries/KaarFlow'
+                queryFolder: getTeamSavedQueryFolder(getConfig().ado.team)
             };
 
             return buildEnvelope('backlog_quality', facts, {
@@ -129,7 +138,7 @@ export function registerGovernanceTools(server: McpServer): void {
                     .slice(0, 8)
                     .map(c => `${c.category}: ${c.count} item(s) (${c.severity})`),
                 recommendations: [
-                    'For every category with count > 3, call create_ado_query with queryHints[].queryName, queryDescription, suggested WIQL and defaultColumns. Store under My Queries/KaarFlow (tool default). Reuse QUERY_ALREADY_EXISTS URLs.',
+                    'For every category with count > 3, call create_ado_query with queryHints[].queryName, queryDescription, suggested WIQL and defaultColumns. Store under My Queries/{configured team} (tool default). Reuse QUERY_ALREADY_EXISTS URLs.',
                     'Do not dump item lists for categories with more than three matches; use the saved query URL.',
                     'Do not modify work items. Present evidence-based cleanup recommendations only.'
                 ],

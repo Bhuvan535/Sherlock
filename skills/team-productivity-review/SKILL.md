@@ -56,7 +56,7 @@ Use a different skill when:
 - the question covers the past week including the Team Lead's own actions → `weekly-team-review`
 - the question is only about who is carrying what right now → `workload-analysis`
 - the question is about the Team Lead's own management activity → `tl-productivity-review`
-- the Team Lead wants to chase somebody about what was found → `team-email-assistant`
+- the Team Lead wants to chase somebody about what was found → `copy the report (email is not available)`
 
 If the Team Lead asks for a ranking, an individual score, or "who is my weakest performer", decline the framing, explain that these tools measure work and not people, and offer the per-member activity table instead.
 
@@ -77,7 +77,7 @@ The tools resolve members by display name, unique name or a partial match. If th
 
 ## Data Sources
 
-All data comes from KaarPulse MCP tools. There is no other source, and nothing here is recalled from an earlier conversation.
+All data comes from S.H.E.R.L.O.C.K. MCP tools. There is no other source, and nothing here is recalled from an earlier conversation.
 
 **Primary:**
 
@@ -109,7 +109,7 @@ All data comes from KaarPulse MCP tools. There is no other source, and nothing h
 8. **Call `analysis_blocked_items`** for the bottleneck section. Use the returned `blockedSignals` evidence and the time-in-state figures, and lead with anything flagged as unchanged for five or more days.
 9. **Establish the sprint trend.** Take the sprint completion trend from the productivity envelope. If the Team Lead questions one sprint, call `ado_get_sprint_progress` with that sprint reference and `include_carry_over: true` to show committed versus completed and the carry-over evidence.
 10. **Assemble the output** in the order given below, marking every generated conclusion as interpretation.
-11. **Close with the read-only statement.** Nothing in this review changed Azure DevOps work items, and none of the recommendations can be carried out by KaarPulse.
+11. **Close with the read-only statement.** Nothing in this review changed Azure DevOps work items, and none of the recommendations can be carried out by S.H.E.R.L.O.C.K..
 12. **Create queries** for significant groups (count > 3) via `ado_query_work_items`: `Platform - Late Completed Work`, `Platform - Carry-Over Work`, `Platform - Overdue Active Work`. Follow `_shared/query-workflow.md`. Do not rank people by completed-item count.
 
 If `analysis_team_productivity` fails, run `analysis_team_delivery_metrics` alone, say plainly that the trend and carry-over sections are unavailable and why, and do not reconstruct them from primitives.
@@ -137,11 +137,11 @@ If `analysis_team_productivity` fails, run `analysis_team_delivery_metrics` alon
 **Output Mode**: The user may request a specific output mode (e.g. `brief`, `verbose`, `visual`). You must adapt your formatting to match the requested mode.
 
 
-Follow the KaarPulse Dashboard UI schema defined in `_shared/output-format.md`.
+Follow the S.H.E.R.L.O.C.K. Dashboard UI schema defined in `_shared/output-format.md`.
 Use the templates from `_shared/templates/` to construct the response.
 
 **Specific structure for Team Productivity Review:**
-1. **Header**: `# 📊 KaarPulse — Team Productivity Review`
+1. **Header**: `# 📊 S.H.E.R.L.O.C.K. — Team Productivity Review`
 2. **Executive Summary**: State the window measured and a 1-2 sentence summary of delivery trends.
 3. **📌 At a Glance (Productivity KPIs)**:
    Provide a KPI table of: Completed items, Throughput, Cycle Time, Lead Time, Reopened, Carry-over. 
@@ -155,7 +155,7 @@ Use the templates from `_shared/templates/` to construct the response.
 8. **🔎 Azure DevOps Queries** for late completed / carry-over / overdue active groups with count > 3.
 9. **⚠️ Data Quality**: State limits of the review (e.g., Cycle time not measurable for X items).
 
-Ensure you state: "No Azure DevOps work items were modified. KaarPulse is read-only for Azure DevOps work items."
+Ensure you state: "No Azure DevOps work items were modified. S.H.E.R.L.O.C.K. is read-only for Azure DevOps work items."
 
 ## Edge Cases
 
@@ -182,8 +182,8 @@ All of `_shared/safety-rules.md` applies. The points that bite hardest here:
 - **No performance judgements about people.** This is the defining constraint of the skill. Assume the output will be forwarded to every person it names; write it so that would be fine.
 - **No manufactured precision.** No composite score, no velocity, no completion forecast, no percentage likelihood. Risk and workload stay categorical with their reasons attached, exactly as the tools return them.
 - **No invented data.** Every id, title, owner, count and date comes from a tool call made during this request. Unknown is not zero, and a metric that could not be measured is reported as such.
-- **Read-only for work items.** The review will surface work that ought to be re-sized, reassigned or closed. KaarPulse can do none of it. Saved queries via `ado_query_work_items` are allowed. End stating no work items were modified.
-- **No email as a side effect.** This skill never drafts or sends anything. If the Team Lead wants the findings sent on, hand over to `team-email-assistant`, where sending requires explicit per-draft confirmation.
+- **Read-only for work items.** The review will surface work that ought to be re-sized, reassigned or closed. S.H.E.R.L.O.C.K. can do none of it. Saved queries via `ado_query_work_items` are allowed. End stating no work items were modified.
+- **No email as a side effect.** This skill never drafts or sends anything. If the Team Lead wants the findings sent on, hand over to `copy the report (email is not available)`, where sending requires explicit per-draft confirmation.
 
 ## Example Requests
 
@@ -193,5 +193,5 @@ All of `_shared/safety-rules.md` applies. The points that bite hardest here:
 - "What did the team complete this month, and what got reopened?"
 - "Show me cycle time and where work is getting stuck."
 - "Give me a productivity review and tell me who my best performer is." → run the review, decline the ranking, present `MEMBER ACTIVITY` as counts.
-- "Productivity review, then draft a note to whoever has blocked items." → this skill, then `team-email-assistant` (draft only; sending needs explicit confirmation).
+- "Productivity review, then draft a note to whoever has blocked items." → this skill, then `copy the report (email is not available)` (draft only; sending needs explicit confirmation).
 - "How is Priya doing?" → prefer `workload-analysis` for her current load; if this skill is used, report her counts and carry the attribution caveat.

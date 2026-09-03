@@ -415,7 +415,10 @@ export function registerPilotModules() {
         dependencies: [],
         async execute(_context, data): Promise<StructuredAnalysisResult> {
             const workItems = getWorkItemService();
-            const ids = await workItems.queryIds([], { limit: 80 });
+            const [ids, iterations] = await Promise.all([
+                workItems.queryIds([], { limit: 80 }),
+                getSprintService().getIterations().catch(() => [])
+            ]);
             const items = await workItems.getByIds(ids, { includeRelations: true, profile: MINIMAL_WORK_ITEM_FIELDS });
             const maps = buildRelationMaps(items);
             const analysis = analyseBacklog({
@@ -428,6 +431,13 @@ export function registerPilotModules() {
                 currentSprintPath: data.sprint?.path ?? null,
                 currentSprintStart: data.sprint?.startDate ? new Date(data.sprint.startDate) : null,
                 currentSprintEnd: data.sprint?.finishDate ? new Date(data.sprint.finishDate) : null,
+                iterations: iterations.map(it => ({
+                    name: it.name,
+                    path: it.path,
+                    startDate: it.startDate ? new Date(it.startDate) : null,
+                    finishDate: it.finishDate ? new Date(it.finishDate) : null,
+                    timeFrame: it.timeFrame
+                })),
                 now: new Date(),
                 truncated: ids.length >= 80,
                 scannedLimit: 80,

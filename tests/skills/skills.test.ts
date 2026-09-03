@@ -263,11 +263,12 @@ describe('skill routing', () => {
         }
     });
 
-    it('explains how to combine skills, and keeps the confirmation gate when it does', () => {
+    it('explains how to combine skills, and does not invent an email skill', () => {
         const router = skills.find(skill => skill.name === 'skill-index')!;
         const text = router.body.toLowerCase();
         expect(text).toMatch(/combin|compound|chain/);
-        expect(text).toContain('confirmation');
+        expect(text).toContain('cannot send email');
+        expect(text).not.toContain('team-email-assistant');
     });
 });
 
@@ -447,13 +448,13 @@ describe('skills over MCP', () => {
         const resources = await mcp.client.listResources();
         const uris = resources.resources.map(resource => resource.uri);
 
-        expect(uris).toContain('skill://kaarpulse/index');
-        expect(uris).toContain('skill://kaarpulse/_shared/rules');
+        expect(uris).toContain('skill://sherlock/index');
+        expect(uris).toContain('skill://sherlock/_shared/rules');
         for (const name of EXPECTED_SKILLS) {
-            expect(uris, `no resource for skill ${name}`).toContain(`skill://kaarpulse/${name}`);
+            expect(uris, `no resource for skill ${name}`).toContain(`skill://sherlock/${name}`);
         }
 
-        const index = await mcp.client.readResource({ uri: 'skill://kaarpulse/index' });
+        const index = await mcp.client.readResource({ uri: 'skill://sherlock/index' });
         const payload = JSON.parse(String((index.contents[0] as { text?: string }).text ?? '')) as {
             count: number;
             azureDevOpsAccess: string;

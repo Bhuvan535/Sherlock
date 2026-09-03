@@ -1,4 +1,4 @@
-# Shared Output Format: KaarPulse Decision Support
+# Shared Output Format: S.H.E.R.L.O.C.K. Decision Support
 
 Every skill must produce output that acts as a Team Lead decision-support dashboard, not a raw Azure DevOps dump.
 
@@ -15,8 +15,8 @@ Do not list hundreds of work items. Group them. If a category has more than 3 it
 - **Lead with what needs attention.** The Team Lead should understand the situation within 30–60 seconds.
 - **Visual over text.** Use headings, compact tables, status indicators and progress bars. Avoid long paragraphs.
 - **Separate fact from judgement.** Facts come from Azure DevOps tools. Insights and recommendations are generated and labelled as such.
-- **Actionable.** Finish with what the Team Lead should do next, and distinguish what KaarPulse can do (create a saved query, draft email) from what the TL must do in Azure DevOps.
-- **Work items stay read-only.** KaarPulse never creates, updates, assigns or closes work items. Creating a saved query via `create_ado_query` is the only permitted Azure DevOps write.
+- **Actionable.** Finish with what the Team Lead should do next, and distinguish what S.H.E.R.L.O.C.K. can do (create a saved query) from what the TL must do in Azure DevOps. This server cannot send email.
+- **Work items stay read-only.** S.H.E.R.L.O.C.K. never creates, updates, assigns or closes work items. Creating a saved query via `create_ado_query` is the only permitted Azure DevOps write.
 - **Auditable.** Every insight traces to work-item ids, a saved query, or named tool output. Prefer `Evidence: [🔗 Open Query](url)` when a query exists.
 
 ## Status Indicators
@@ -31,7 +31,7 @@ Do not list hundreds of work items. Group them. If a category has more than 3 it
 ## Standard response architecture
 
 ```markdown
-# 📊 KaarPulse — <Analysis Name>
+# 📊 S.H.E.R.L.O.C.K. — <Analysis Name>
 
 > 🟢 / 🟡 / 🟠 / 🔴 **Executive Summary:** one concise explanation of the current situation.
 
@@ -88,7 +88,7 @@ Pros / Cons
 ### Option B
 Pros / Cons
 
-### KaarPulse Recommendation
+### S.H.E.R.L.O.C.K. Recommendation
 The Team Lead remains the final decision maker.
 
 ## 🎯 Recommended Actions

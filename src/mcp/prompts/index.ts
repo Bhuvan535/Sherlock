@@ -5,7 +5,7 @@ import { createLogger } from '../../utils/logger.js';
 const log = createLogger('mcp-prompts');
 
 const READ_ONLY_REMINDER =
-    'Azure DevOps work items are read-only through this server: you may read and analyse, and you may recommend, but you cannot create, update, delete or assign work items. Saved queries via create_ado_query are allowed and always go under My Queries/KaarFlow. If asked to change a work item, say so plainly and offer to draft an email or produce a recommendation instead.';
+    'Azure DevOps work items are read-only through this server: you may read and analyse, and you may recommend, but you cannot create, update, delete or assign work items. Saved queries via create_ado_query are allowed and go under My Queries/{configured team}. If asked to change a work item, say so plainly and offer a recommendation instead.';
 
 const LABELLING_REMINDER =
     'Keep measured Azure DevOps data separate from your own interpretation. Every analysis tool returns `facts` (measured) alongside `observations`, `concerns` and `recommendations` (generated). Present them as such, cite work items as "#<id> <title>", and never invent an item, person, date or metric that is not in the tool output.';
@@ -30,10 +30,10 @@ export function registerPrompts(server: McpServer): void {
         {
             name: 'daily_team_review',
             title: 'Daily team review',
-            description: 'Run the morning stand-up review for the K4K Platform team.',
+            description: 'Run the morning stand-up review for the configured team.',
             build: () =>
                 [
-                    'Run my daily team review for the K4K Platform team.',
+                    'Run my daily team review for the configured team.',
                     '',
                     'Call `analysis_daily_team_review` first - it returns every section in one read. If any section is empty or errored, fill the gap with the specific tool for it (`ado_get_current_sprint`, `ado_get_overdue_items`, `ado_get_blocked_items`, `ado_get_unassigned_items`, `analysis_team_workload`).',
                     '',
@@ -67,7 +67,7 @@ export function registerPrompts(server: McpServer): void {
             },
             build: args =>
                 [
-                    `Review the ${args.sprint ?? 'current'} sprint for the K4K Platform team.`,
+                    `Review the ${args.sprint ?? 'current'} sprint for the configured team.`,
                     '',
                     `Call \`ado_get_sprint_progress\` with sprint="${args.sprint ?? 'current'}", then \`analysis_project\` for delivery metrics, and \`analysis_deadline_risk\` for schedule pressure inside the sprint.`,
                     '',
@@ -116,7 +116,7 @@ export function registerPrompts(server: McpServer): void {
             },
             build: args =>
                 [
-                    `Review deadlines for the K4K Platform team over the next ${args.horizon_days ?? '14'} days.`,
+                    `Review deadlines for the configured team over the next ${args.horizon_days ?? '14'} days.`,
                     '',
                     `Call \`analysis_deadline_risk\` with horizon_days=${args.horizon_days ?? 14}.`,
                     '',
@@ -127,7 +127,7 @@ export function registerPrompts(server: McpServer): void {
                     '- Medium Risk items, briefly.',
                     '- Open items with no due date, which cannot be schedule-checked at all.',
                     '',
-                    'Then propose the follow-ups worth making today. If a reminder email would help, offer to draft one with `email_draft_deadline_reminder` - draft only, and I will confirm before anything is sent.',
+                    'Then propose the follow-ups worth making today. This server cannot send email; the Team Lead can copy the report.',
                     '',
                     LABELLING_REMINDER,
                     READ_ONLY_REMINDER
@@ -139,7 +139,7 @@ export function registerPrompts(server: McpServer): void {
             description: 'Review how work is distributed across the team.',
             build: () =>
                 [
-                    'Review how work is distributed across the K4K Platform team.',
+                    'Review how work is distributed across the configured team.',
                     '',
                     'Call `analysis_work_distribution`, then `analysis_available_team_members` for spare capacity.',
                     '',
@@ -176,7 +176,7 @@ export function registerPrompts(server: McpServer): void {
                           LABELLING_REMINDER
                       ].join('\n')
                     : [
-                          'Triage the unassigned work for the K4K Platform team.',
+                          'Triage the unassigned work for the configured team.',
                           '',
                           'Call `analysis_assignment_recommendations`, and `analysis_available_team_members` to sanity-check capacity.',
                           '',
@@ -193,13 +193,13 @@ export function registerPrompts(server: McpServer): void {
             description: 'Work through overdue items and prepare follow-ups.',
             build: () =>
                 [
-                    'Help me follow up on overdue work for the K4K Platform team.',
+                    'Help me follow up on overdue work for the configured team.',
                     '',
                     'Call `ado_get_overdue_items`, then `analysis_deadline_risk` for the reasoning, and `ado_get_work_item_history` on anything that looks stuck.',
                     '',
                     'For each overdue item tell me: what it is, who owns it, how late it is, its current state, and when it last changed. Group by owner so I can have one conversation per person rather than one per item.',
                     '',
-                    'Then, for the owners with the most overdue work, offer to draft a reminder with `email_draft_deadline_reminder`. Show me each draft in full and wait for my explicit confirmation before calling `email_send_confirmed` - never send without it.',
+                    'Then group overdue work by owner. This server cannot send reminder emails; the Team Lead can copy the report.',
                     '',
                     LABELLING_REMINDER,
                     READ_ONLY_REMINDER
@@ -211,7 +211,7 @@ export function registerPrompts(server: McpServer): void {
             description: 'Review blocked work and dependency chains.',
             build: () =>
                 [
-                    'Review blocked work and dependencies for the K4K Platform team.',
+                    'Review blocked work and dependencies for the configured team.',
                     '',
                     'Call `analysis_blocked_items`, `analysis_critical_dependencies`, `analysis_cross_team_dependencies` and `analysis_items_blocking_release`.',
                     '',
@@ -257,7 +257,7 @@ export function registerPrompts(server: McpServer): void {
             argsSchema: { member: z.string().describe('Team member name or email.') },
             build: args =>
                 [
-                    `Review ${args.member ?? 'a team member'}'s work on the K4K Platform team.`,
+                    `Review ${args.member ?? 'a team member'}'s work on the configured team.`,
                     '',
                     `Call \`analysis_member_work\`, \`analysis_member_workload\` and \`analysis_member_sprint_history\` for ${args.member ?? 'them'}.`,
                     '',

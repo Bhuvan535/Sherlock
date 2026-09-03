@@ -17,7 +17,7 @@ supporting_tools:
   - ado_get_work_item
   - ado_query_work_items
 missing_capabilities:
-  - "KaarPulse cannot re-parent or create child work items."
+  - "S.H.E.R.L.O.C.K. cannot re-parent or create child work items."
   - "There is no saved-query discovery tool. Reuse happens only when ado_query_work_items returns QUERY_ALREADY_EXISTS."
   - "Flat WIQL cannot always express 'has no children'. Closest valid filters are used and the limitation is stated."
 triggers:
@@ -80,7 +80,7 @@ WIQL for "no children" is often approximate. State that the query lists candidat
 
 Follow `_shared/output-format.md`.
 
-1. `# 📊 KaarPulse — Hierarchy Health`
+1. `# 📊 S.H.E.R.L.O.C.K. — Hierarchy Health`
 2. Executive summary with indicator.
 3. **📌 At a Glance** — items analysed, orphan count, empty-parent count.
 4. **🚨 What Needs Attention** — highest-severity groups (orphan tasks before empty epics).
@@ -101,7 +101,7 @@ Follow `_shared/output-format.md`.
 | Custom type names | Use literals from `ado_get_backlogs` / types. Never assume "User Story". |
 | Query folder missing or WIQL invalid | Present groups without a fake URL. |
 | Duplicate query title | Reuse `existingQueryUrl`. |
-| Team Lead asks to link parents | Refuse the write. Offer the query and an email draft via `team-email-assistant`. |
+| Team Lead asks to link parents | Refuse the write. Offer the query and an email draft via `copy the report (email is not available)`. |
 | Composite tool fails | Sample with `ado_get_work_items_by_type` (limit 25), state coverage, never extrapolate. |
 
 ## Safety Rules

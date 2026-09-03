@@ -107,7 +107,7 @@ export function registerSkillTools(server: McpServer): void {
         name: 'skill_execute',
         title: 'Execute a skill programmatically',
         description:
-            'Executes a KaarFlow skill using the strict core architecture. This replaces manual tool-chaining and WIQL generation by the LLM. It returns the fully formatted Markdown ready to be relayed to the user.',
+            'Executes a S.H.E.R.L.O.C.K. skill using the strict core architecture. This replaces manual tool-chaining and WIQL generation by the LLM. It returns the fully formatted Markdown ready to be relayed to the user.',
         group: 'analysis',
         inputSchema: {
             name: z.string().min(1).describe('Skill name, for example "daily-standup-starter".'),
