@@ -28,9 +28,7 @@
     "test:skills": "vitest run tests/skills",
     "inspector": "mcp-inspector --config mcp-inspector.config.json --server sherlock",
     "inspector:build": "npm run build && mcp-inspector --config mcp-inspector.config.json --server sherlock-dist",
-    "doctor": "tsx scripts/doctor.ts",
-    "verify:live": "tsx scripts/verify-live.ts",
-    "verify:readonly": "tsx scripts/verify-readonly.ts"
+    "doctor": "tsx scripts/doctor.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.30.0",

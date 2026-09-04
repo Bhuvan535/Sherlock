@@ -27,4 +27,11 @@ coverage/
 .vitest/
 .DS_Store
 Thumbs.db
-.env
+
+# Local MCP client configs (machine paths / secrets)
+.cursor/mcp.json
+.mcp.json
+
+# One-off archives and generated GitBook copies
+*.zip
+blueprint/
