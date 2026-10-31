@@ -252,10 +252,9 @@ export class WorkItemService {
         if (!Number.isInteger(id) || id <= 0) {
             throw new AppError('INVALID_INPUT', `"${id}" is not a valid Azure DevOps work-item id.`);
         }
-        const fields = await this.context.getWorkItemFieldProjection(options.profile);
-        const raw = await this.client.getWorkItem(this.project, id, options.includeRelations === false ? 'none' : 'relations', fields);
-        const map = await new FieldMappingService(this.project).getCanonicalMap();
-        const [item] = await this.withStateCategories([this.normalise(raw, map)]);
+        // Use the batch GET: single-item `$expand` is rejected by this organization
+        // when combined with a field projection, and is unreliable even without one.
+        const [item] = await this.getByIds([id], options);
         if (!item) throw new AppError('NOT_FOUND', `Work item #${id} was not found.`);
         return item;
     }

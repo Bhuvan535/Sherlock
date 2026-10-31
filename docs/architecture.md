@@ -113,10 +113,13 @@ Thin orchestrators registered in `src/server.ts`. Groups:
 | `tl_*` | Local audit-trail reviews |
 | `skill_*` | List / get / execute built-in and custom skills |
 | `sherlock_*` (custom skills) | Custom skill lifecycle and composition |
-| `create_ado_query` | **Only** Azure DevOps write: saved queries |
+| `create_ado_query` | Controlled saved-query create/reuse |
+| `sherlock_prepare_*` / `sherlock_confirm_write` / `sherlock_retry_write` | Phase 4 confirmed writes via WorkItemOperationService (see [work-item-operations.md](work-item-operations.md)) |
+| `sherlock_plan_work` / `sherlock_get_work_plan` / `sherlock_modify_work_plan` / `sherlock_validate_work_item_plan` | Phase 2 planner + validation (see [work-item-planner.md](work-item-planner.md)) |
+| `sherlock_prepare_deployment` / `sherlock_confirm_deployment` / `sherlock_retry_deployment` | Phase 3 deploy a stored valid plan (see [deployment.md](deployment.md)) |
 | `sherlock_health_check` | Configuration + ADO + runtime diagnostics |
 
-Tools are audited at startup against the read-only policy (`src/security/read-only-policy.ts`). The only non-read-only tool allowed is `create_ado_query`.
+Tools are audited at startup against the read-only policy (`src/security/read-only-policy.ts`). Non-read-only tools: `create_ado_query`, `sherlock_confirm_write`, `sherlock_retry_write`, `sherlock_confirm_deployment`, and `sherlock_retry_deployment`.
 
 ### 3. Core (`src/core/`)
 
@@ -140,7 +143,7 @@ SkillExecutor is the orchestration engine. V1 productization does not rewrite it
 | Type | Role |
 | --- | --- |
 | Read client | GET + allowlisted WIQL POST only |
-| Write client | Saved-query folder ensure + query create |
+| Write client | Saved queries + **controlled** work-item create/update/comment (never arbitrary URLs) |
 | WorkItemService / TeamService / SprintService / ProjectService | Domain reads |
 | WIQL builder | Structured filters → SELECT-only WIQL |
 | Field mapping / profiles | Compact DTOs to control token size |
@@ -160,7 +163,7 @@ SQLite file default: `data/sherlock.sqlite` (`DATABASE_URL`).
 Stored:
 
 - `tl_activity` — tool audit summaries (redacted)
-- `custom_skills` — custom skill JSON
+- `write_operations` / `work_item_plans` / `work_item_deployments` — confirmed writes, plans, deployments
 
 Not stored:
 

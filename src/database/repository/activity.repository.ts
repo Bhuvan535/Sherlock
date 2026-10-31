@@ -12,7 +12,8 @@ export type ActivityCategory =
     | 'confirmation'
     | 'recommendation_review'
     | 'query_management'
-    | 'maintenance';
+    | 'maintenance'
+    | 'work_item_write';
 
 export type ActivityOutcome = 'success' | 'error' | 'rejected';
 export type ConfirmationStatus = 'not_applicable' | 'awaiting_confirmation' | 'confirmed' | 'declined';

@@ -6,6 +6,7 @@ import { AppError, toAppError } from '../utils/errors.js';
 import { createLogger } from '../utils/logger.js';
 import { summarise } from '../utils/redact.js';
 import { getActivityService } from '../services/teamlead/activity.service.js';
+import { markPresented } from '../services/write/authorization.js';
 import type { ActivityCategory, ConfirmationStatus } from '../database/repository/activity.repository.js';
 
 const log = createLogger('mcp-tools');
@@ -116,6 +117,11 @@ export function registerTool<TShape extends Record<string, ZodTypeAny>>(
 
                 log.debug('Tool completed', { tool: definition.name, durationMs });
 
+                // A proposal only counts as presented once it has been rendered
+                // into the response the client receives. Nothing that skips this
+                // step can later be confirmed.
+                recordPresentation(result);
+
                 const summary = definition.summarise ? definition.summarise(result) : summariseResult(result);
                 return {
                     content: [
@@ -155,6 +161,15 @@ export function registerTool<TShape extends Record<string, ZodTypeAny>>(
     );
 
     registered.push({ name: definition.name, parameterNames, group: definition.group, title: definition.title, readOnly });
+}
+
+function recordPresentation(result: unknown): void {
+    if (!result || typeof result !== 'object') return;
+    const record = result as { confirmationId?: unknown; executed?: unknown };
+    if (record.executed === true) return;
+    if (typeof record.confirmationId === 'string' && record.confirmationId.length > 0) {
+        markPresented(record.confirmationId);
+    }
 }
 
 function stringify(value: unknown): string {

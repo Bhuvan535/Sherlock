@@ -20,7 +20,12 @@ export type ErrorCode =
     | 'GRAPH_AUTH_FAILED'
     | 'INVALID_INPUT'
     | 'NOT_FOUND'
-    | 'INTERNAL_ERROR';
+    | 'INTERNAL_ERROR'
+    | 'WRITE_REVISION_CONFLICT'
+    | 'WRITE_CONFIRMATION_INVALID'
+    | 'WRITE_NOT_AUTHORIZED'
+    | 'WRITE_RULE_VIOLATION'
+    | 'WRITE_FAILED';
 
 /**
  * Application error carrying a stable machine code plus a message that is always
@@ -125,6 +130,13 @@ export function mapAdoHttpError(status: number, statusText: string, bodySnippet?
             'ADO_SERVER_ERROR',
             `Azure DevOps returned a server error (${status}).`,
             options('This is an upstream Azure DevOps problem. Retry shortly; check the Azure DevOps status page if it persists.')
+        );
+    }
+    if (status === 409) {
+        return new AppError(
+            'WRITE_REVISION_CONFLICT',
+            'The work item changed since this update was prepared. The change was not applied.',
+            options('Prepare the change again against the current revision.')
         );
     }
     if (status === 400) {

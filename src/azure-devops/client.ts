@@ -389,10 +389,14 @@ export class AzureDevOpsReadClient {
     // --------------------------------------------------------------- work items
 
     async getWorkItem(project: string, id: number, expand: 'none' | 'relations' | 'all' = 'relations', fields?: string[]): Promise<AdoWorkItem> {
-        return await this.get<AdoWorkItem>(this.projectPath(`_apis/wit/workitems/${id}`, project), {
-            $expand: expand,
-            ...(fields && fields.length > 0 ? { fields: fields.join(',') } : {})
-        });
+        // Azure DevOps rejects `$expand` together with `fields` on this endpoint.
+        const query =
+            expand !== 'none'
+                ? { $expand: expand }
+                : fields && fields.length > 0
+                  ? { fields: fields.join(',') }
+                  : { $expand: 'none' };
+        return await this.get<AdoWorkItem>(this.projectPath(`_apis/wit/workitems/${id}`, project), query);
     }
 
     /**

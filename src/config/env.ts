@@ -45,7 +45,8 @@ const envSchema = z.object({
     DATABASE_URL: nonEmpty('DATABASE_URL').default('file:./data/sherlock.sqlite'),
 
     LOG_LEVEL: z.enum(['silent', 'error', 'warn', 'info', 'debug']).default('info'),
-    CACHE_TTL_SECONDS: z.coerce.number().int().min(0).max(86_400).default(300)
+    CACHE_TTL_SECONDS: z.coerce.number().int().min(0).max(86_400).default(300),
+    SHERLOCK_USER_ID: z.string().trim().min(1).default('local-operator')
 });
 
 export interface AppConfig {
@@ -68,6 +69,8 @@ export interface AppConfig {
     };
     logLevel: LogLevel;
     cacheTtlSeconds: number;
+    /** Local operator id for write confirmation ownership. Not Entra ID. */
+    userId: string;
 }
 
 /**
@@ -119,7 +122,8 @@ export function getConfig(): AppConfig {
         sherlockEnv: env.SHERLOCK_ENV,
         database: { path: resolveDatabasePath(env.DATABASE_URL) },
         logLevel: env.LOG_LEVEL,
-        cacheTtlSeconds: env.CACHE_TTL_SECONDS
+        cacheTtlSeconds: env.CACHE_TTL_SECONDS,
+        userId: env.SHERLOCK_USER_ID
     };
     return cachedConfig;
 }

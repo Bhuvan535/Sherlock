@@ -37,6 +37,8 @@ export interface FixtureWorkItem {
     relatedIds?: number[];
     updates?: FixtureUpdate[];
     comments?: { text: string; author: string; createdDate: string }[];
+    description?: string;
+    rev?: number;
 }
 
 export interface FixtureUpdate {
@@ -330,6 +332,7 @@ export function createAdoFixture(options: AdoFixtureOptions = {}): {
     const failures = (options.failures ?? []).map(failure => ({ ...failure, remaining: failure.times ?? 1 }));
     const requests: RecordedRequest[] = [];
     const byId = new Map(workItems.map(item => [item.id, item]));
+    let nextCreateId = 9000;
 
     const json = (payload: unknown, status = 200): Response =>
         new Response(JSON.stringify(payload), {
@@ -355,7 +358,8 @@ export function createAdoFixture(options: AdoFixtureOptions = {}): {
         });
 
         for (const failure of failures) {
-            if (failure.remaining > 0 && path.toLowerCase().includes(failure.fragment.toLowerCase())) {
+            const haystack = `${method} ${url} ${path}`.toLowerCase();
+            if (failure.remaining > 0 && haystack.includes(failure.fragment.toLowerCase())) {
                 failure.remaining -= 1;
                 return new Response(failure.body ?? JSON.stringify({ message: 'Injected failure' }), {
                     status: failure.status,
@@ -563,6 +567,14 @@ export function createAdoFixture(options: AdoFixtureOptions = {}): {
         if (/\/_apis\/wit\/workitems\/\d+\/comments$/.test(path)) {
             const id = Number(path.match(/workitems\/(\d+)\/comments/)?.[1]);
             const item = byId.get(id);
+            if (method === 'POST') {
+                const text = String((body as { text?: string } | undefined)?.text ?? '');
+                if (item) {
+                    item.comments ??= [];
+                    item.comments.push({ text, author: 'Sherlock', createdDate: new Date().toISOString() });
+                }
+                return json({ id: item?.comments?.length ?? 1, text, workItemId: id }, 200);
+            }
             const comments = item?.comments ?? [];
             return json({
                 totalCount: comments.length,
@@ -577,10 +589,37 @@ export function createAdoFixture(options: AdoFixtureOptions = {}): {
                 }))
             });
         }
+        if (/\/_apis\/wit\/workitems\/\$/.test(path) && method === 'POST') {
+            const type = decodeURIComponent(path.split('/workitems/$')[1] ?? 'Task');
+            const created: FixtureWorkItem = {
+                id: nextCreateId++,
+                type,
+                title: 'Untitled',
+                state: 'New',
+                iterationPath: `${project}\\Sprint 12`,
+                areaPath: `${project}\\Platform`,
+                rev: 1
+            };
+            applyJsonPatch(created, body);
+            byId.set(created.id, created);
+            workItems.push(created);
+            return json(toWorkItemPayload(created, project, true), 200);
+        }
         if (/\/_apis\/wit\/workitems\/\d+$/.test(path)) {
             const id = Number(path.match(/workitems\/(\d+)$/)?.[1]);
             const item = byId.get(id);
             if (!item) return json({ message: `TF401232: Work item ${id} does not exist` }, 404);
+            if (method === 'PATCH') {
+                const ops = Array.isArray(body) ? body : [];
+                const test = ops.find((op: { op?: string; path?: string }) => op.op === 'test' && op.path === '/rev');
+                const currentRev = item.rev ?? (item.updates?.length ?? 1) + 1;
+                if (test && Number(test.value) !== currentRev) {
+                    return json({ message: 'Revision conflict' }, 409);
+                }
+                applyJsonPatch(item, ops);
+                item.rev = currentRev + 1;
+                return json(toWorkItemPayload(item, project, true));
+            }
             return json(toWorkItemPayload(item, project, true));
         }
         if (path.endsWith('/_apis/wit/workitems')) {
@@ -649,6 +688,52 @@ function toIterationPayload(iteration: {
     };
 }
 
+function applyJsonPatch(item: FixtureWorkItem, body: unknown): void {
+    const ops = Array.isArray(body) ? body : [];
+    for (const op of ops as { op?: string; path?: string; value?: unknown }[]) {
+        if (op.path?.startsWith('/relations/') && op.op === 'remove') {
+            const index = Number(String(op.path).split('/')[2]);
+            const payload = toWorkItemPayload(item, 'K4K', true);
+            const rel = payload.relations?.[index];
+            if (rel?.rel?.includes('Hierarchy-Reverse')) item.parentId = undefined;
+            if (rel?.rel?.includes('Dependency-Reverse')) {
+                const match = String(rel.url ?? '').match(/workItems\/(\d+)/i);
+                if (match) item.predecessorIds = (item.predecessorIds ?? []).filter(id => id !== Number(match[1]));
+            }
+            continue;
+        }
+        if (op.path === '/relations/-' && op.value && typeof op.value === 'object') {
+            const rel = op.value as { rel?: string; url?: string };
+            const match = String(rel.url ?? '').match(/workItems\/(\d+)/i);
+            if (match && (rel.rel === 'System.LinkTypes.Hierarchy-Reverse' || rel.rel?.includes('Hierarchy-Reverse'))) {
+                item.parentId = Number(match[1]);
+            }
+            if (match && (rel.rel === 'System.LinkTypes.Dependency-Reverse' || rel.rel?.includes('Dependency-Reverse'))) {
+                item.predecessorIds = [...(item.predecessorIds ?? []), Number(match[1])];
+            }
+            continue;
+        }
+        if (!op.path?.startsWith('/fields/')) continue;
+        const ref = op.path.slice('/fields/'.length);
+        const value = op.value;
+        if (ref === FIELD.title) item.title = String(value ?? '');
+        else if (ref === FIELD.description) item.description = String(value ?? '');
+        else if (ref === FIELD.state) item.state = String(value ?? item.state);
+        else if (ref === FIELD.priority) item.priority = Number(value);
+        else if (ref === FIELD.assignedTo) {
+            item.assignedTo =
+                typeof value === 'object' && value && 'displayName' in value
+                    ? String((value as { displayName?: string }).displayName)
+                    : String(value ?? '');
+        } else if (ref === FIELD.iterationPath) item.iterationPath = String(value ?? '');
+        else if (ref === FIELD.areaPath) item.areaPath = String(value ?? '');
+        else if (ref === FIELD.tags) item.tags = String(value ?? '');
+        else if (ref === FIELD.startDate || ref === FIELD.targetDate || ref === FIELD.dueDate) {
+            item.dueDate = String(value ?? '');
+        }
+    }
+}
+
 function toWorkItemPayload(item: FixtureWorkItem, project: string, withRelations: boolean) {
     const fields: Record<string, unknown> = {
         [FIELD.id]: item.id,
@@ -677,6 +762,7 @@ function toWorkItemPayload(item: FixtureWorkItem, project: string, withRelations
     fields[FIELD.stateChangeDate] = item.closedDate ?? item.changedDate ?? fields[FIELD.changedDate];
     if (item.blocked) fields[FIELD.blocked] = item.blocked;
     if (item.parentId !== undefined) fields[FIELD.parent] = item.parentId;
+    if (item.description) fields[FIELD.description] = item.description;
 
     const relations: { rel: string; url: string; attributes?: Record<string, unknown> }[] = [];
     const link = (rel: string, id: number): void => {
@@ -690,7 +776,7 @@ function toWorkItemPayload(item: FixtureWorkItem, project: string, withRelations
 
     return {
         id: item.id,
-        rev: (item.updates?.length ?? 1) + 1,
+        rev: item.rev ?? (item.updates?.length ?? 1) + 1,
         fields,
         ...(withRelations ? { relations } : {}),
         url: `https://dev.azure.com/org/_apis/wit/workItems/${item.id}`,

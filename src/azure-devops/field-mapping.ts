@@ -67,10 +67,16 @@ export class FieldMappingService {
             if (lower.includes('actual end') || refLower.includes('actualenddate')) {
                 map.actualEnd.push(field.referenceName);
             } else if (refLower === 'microsoft.vsts.common.closeddate') {
+                // ClosedDate is a process field, not a planned/actual schedule field.
+                // Keep it last so writes prefer custom Actual End fields.
                 map.actualEnd.push(field.referenceName);
             }
         }
 
+        map.actualEnd = [
+            ...map.actualEnd.filter(field => !/closeddate$/i.test(field)),
+            ...map.actualEnd.filter(field => /closeddate$/i.test(field))
+        ];
         this.cachedMap = map;
         return map;
     }

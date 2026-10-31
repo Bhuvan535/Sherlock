@@ -2,7 +2,7 @@
 
 **Sprint Health, Execution, Risk, Logistics, Operations & Coordination Knowledge**
 
-Local MCP server for Azure DevOps team intelligence: sprint health, workload, deadline risk, backlog quality, recommendations, custom skills, and **controlled saved-query creation**. Work items stay read-only.
+Local MCP server for Azure DevOps team intelligence: sprint health, workload, deadline risk, backlog quality, recommendations, custom skills, saved queries, and **confirmed** work-item writes. Analysis tools remain read-only; mutations require an explicit `WRITE-` confirmation.
 
 This README is the map. The detailed guides live in [`docs/`](docs/README.md).
 
@@ -31,7 +31,7 @@ It is not a website, not a hosted API, and not a work-item editor.
 
 - Sprint, backlog, deadline, dependency, workload, and project-health analysis
 - Built-in skills plus SQLite-backed custom skills (`brief` / `verbose` / `visual`)
-- Work-item **read-only** security with **controlled** saved-query create/reuse
+- Proposed trees: `sherlock_plan_work`. Deploy: `sherlock_prepare_deployment` / `sherlock_confirm_deployment` ([docs/deployment.md](docs/deployment.md)). Confirmed work-item writes: [docs/work-item-operations.md](docs/work-item-operations.md).
 - Team-scoped queries: `ADO_TEAM=Development` → `My Queries/Development/`
 - Dynamic Azure DevOps URLs from configuration (no hardcoded org/project)
 - `sherlock_health_check` and `npm run doctor`
@@ -88,7 +88,7 @@ Full diagrams and component notes: [docs/architecture.md](docs/architecture.md).
 - npm
 - Git
 - An Azure DevOps organization, project, and team
-- A PAT (read; plus query write if you want saved queries)
+- A PAT (read; Work Items read & write for confirmed creates/updates and saved queries)
 
 ## 5. Installation
 

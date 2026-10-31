@@ -1,0 +1,11 @@
+{
+  "title": "sherlock-mcp",
+  "outputDir": "blueprint",
+  "ignore": [],
+  "llm": {
+    "enabled": false,
+    "provider": "gemini",
+    "model": "gemini-2.0-flash",
+    "apiKey": ""
+  }
+}

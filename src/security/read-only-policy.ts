@@ -72,6 +72,21 @@ const FORBIDDEN_PATH_FRAGMENTS = [
  * fails hard if any registered tool name matches, which makes "someone adds a
  * write tool later" a build-breaking mistake rather than a silent regression.
  */
+/** Controlled Phase 1 write tools. Name-pattern audit skips these exact names. */
+export const CONTROLLED_WRITE_TOOLS = [
+    'sherlock_prepare_create_work_item',
+    'sherlock_prepare_update_work_item',
+    'sherlock_prepare_set_parent',
+    'sherlock_prepare_relationship_change',
+    'sherlock_prepare_add_comment',
+    'sherlock_get_write_status',
+    'sherlock_confirm_write',
+    'sherlock_retry_write',
+    'sherlock_prepare_deployment',
+    'sherlock_confirm_deployment',
+    'sherlock_retry_deployment'
+] as const;
+
 export const FORBIDDEN_TOOL_NAME_PATTERNS: RegExp[] = [
     // Tool names are snake_case, so `\b` is useless as a boundary (`_` is a word
     // character): these use explicit start/separator boundaries instead.
@@ -280,8 +295,9 @@ export function auditToolSurface(tools: AuditableTool[]): ToolSurfaceViolation[]
     const violations: ToolSurfaceViolation[] = [];
 
     for (const tool of tools) {
+        const controlledWrite = (CONTROLLED_WRITE_TOOLS as readonly string[]).includes(tool.name);
         for (const pattern of FORBIDDEN_TOOL_NAME_PATTERNS) {
-            if (pattern.test(tool.name)) {
+            if (!controlledWrite && pattern.test(tool.name)) {
                 violations.push({
                     tool: tool.name,
                     reason: `Tool name matches a forbidden mutation pattern (${pattern}).`

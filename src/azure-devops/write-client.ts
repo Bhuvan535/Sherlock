@@ -1,6 +1,7 @@
 import { getConfig } from '../config/env.js';
 import { AppError, toAppError, mapAdoHttpError } from '../utils/errors.js';
 import { createLogger } from '../utils/logger.js';
+import { assertWriteAuthorized } from '../services/write/authorization.js';
 import { AdoWiqlResult } from './types.js';
 
 export function getTeamSavedQueryFolder(team: string = getConfig().ado.team): string {
@@ -47,14 +48,19 @@ export class AzureDevOpsWriteClient {
         return url.toString();
     }
 
-    private async execute<T>(method: string, url: string, body?: unknown): Promise<T> {
+    private async execute<T>(
+        method: string,
+        url: string,
+        body?: unknown,
+        contentType = 'application/json'
+    ): Promise<T> {
         let response: Response;
         try {
             response = await this.fetchImpl(url, {
                 method,
                 headers: {
                     'Authorization': `Basic ${Buffer.from(`:${this.config.pat}`).toString('base64')}`,
-                    'Content-Type': 'application/json',
+                    'Content-Type': contentType,
                     'Accept': 'application/json'
                 },
                 body: body !== undefined ? JSON.stringify(body) : undefined
@@ -71,7 +77,11 @@ export class AzureDevOpsWriteClient {
                  if (snippet.includes('<html') || snippet.includes('signin')) {
                      throw new AppError('ADO_AUTH_FAILED', 'Azure DevOps authentication failed. Check the configured PAT.');
                  }
-                 throw new AppError('ADO_FORBIDDEN', 'The configured Azure DevOps identity does not have permission for this operation.');
+                 throw new AppError(
+                     'ADO_FORBIDDEN',
+                     'S.H.E.R.L.O.C.K. does not have permission to modify this work item. Check the Azure DevOps identity/PAT permissions.',
+                     { httpStatus: response.status }
+                 );
             }
 
             throw mapAdoHttpError(response.status, response.statusText, snippet.slice(0, 2000));
@@ -167,6 +177,33 @@ export class AzureDevOpsWriteClient {
             queryType: 'flat',
             ...(description ? { description } : {})
         });
+    }
+
+    async createWorkItem(
+        project: string,
+        workItemType: string,
+        operations: { op: string; path: string; value?: unknown }[]
+    ): Promise<import('./types.js').AdoWorkItem> {
+        assertWriteAuthorized(`create of a ${workItemType}`);
+        const typeSegment = `$${encodeURIComponent(workItemType)}`;
+        const url = this.buildUrl(this.projectPath(`_apis/wit/workitems/${typeSegment}`, project), {}, '7.1');
+        return await this.execute('POST', url, operations, 'application/json-patch+json');
+    }
+
+    async updateWorkItem(
+        project: string,
+        id: number,
+        operations: { op: string; path: string; value?: unknown }[]
+    ): Promise<import('./types.js').AdoWorkItem> {
+        assertWriteAuthorized(`update of work item #${id}`);
+        const url = this.buildUrl(this.projectPath(`_apis/wit/workitems/${id}`, project), {}, '7.1');
+        return await this.execute('PATCH', url, operations, 'application/json-patch+json');
+    }
+
+    async addWorkItemComment(project: string, id: number, text: string): Promise<{ id?: number; text?: string }> {
+        assertWriteAuthorized(`comment on work item #${id}`);
+        const url = this.buildUrl(this.projectPath(`_apis/wit/workitems/${id}/comments`, project), {}, '7.1-preview.4');
+        return await this.execute('POST', url, { text });
     }
 }
 
